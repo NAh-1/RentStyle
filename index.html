@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentStyle | Premium Event & Costume Rentals</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Configuration for Tailwind and Base Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f4f6fb',
+                            100: '#e8ecf7',
+                            500: '#1e3a8a', // Royal Blue
+                            600: '#1d4ed8', 
+                            700: '#1e40af', 
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom scrollbar and utility classes */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms, transform 300ms;
+        }
+        /* View transition utility */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .view-section.active-view {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('catalogView')">
+                    <div class="bg-brand-900 text-white p-2.5 rounded-lg shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-shirt text-xl"></i>
+                    </div>
+                    <span class="font-serif text-2xl font-bold text-slate-900 tracking-tight">RentStyle</span>
+                </div>
+                
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex space-x-8 h-full">
+                    <button id="nav-catalogView" onclick="switchView('catalogView')" class="nav-link text-brand-600 border-brand-600 font-medium border-b-2 px-1 h-full flex items-center transition-colors">Outfits Catalog</button>
+                    <button id="nav-infoView" onclick="switchView('infoView')" class="nav-link text-slate-500 border-transparent hover:text-brand-600 hover:border-brand-600 border-b-2 font-medium px-1 h-full flex items-center transition-colors">How it Works & Pick-up</button>
+                    <button id="nav-bookingsView" onclick="switchView('bookingsView')" class="nav-link text-slate-500 border-transparent hover:text-brand-600 hover:border-brand-600 border-b-2 font-medium px-1 h-full flex items-center transition-colors">My Reservations</button>
+                </div>
+                
+                <!-- Cart & Account Interactions -->
+                <div class="flex items-center gap-4">
+                    <!-- Cart Button -->
+                    <button onclick="switchView('cartView')" class="relative p-2 text-slate-600 hover:text-brand-600 transition-colors">
+                        <i class="fa-solid fa-basket-shopping text-xl"></i>
+                        <span id="cartBadge" class="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 bg-amber-500 text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+                    </button>
+                    <!-- Demo profile action -->
+                    <button onclick="showToast('Demo Account', 'You are currently logged in as a guest demo user.')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 h-10 w-10 rounded-full font-medium transition-colors flex items-center justify-center">
+                        <i class="fa-regular fa-user"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow w-full">
+
+        <!-- 1. CATALOG VIEW -->
+        <div id="catalogView" class="view-section active-view">
+            <!-- Hero banner introducing premium look and flexible policy -->
+            <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 relative overflow-hidden text-white">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <span class="bg-amber-500/20 text-amber-300 font-semibold tracking-wider uppercase text-xs px-3 py-1 rounded-full mb-6 inline-block border border-amber-400/30">Fair Booking Guarantee</span>
+                        <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4 leading-tight">
+                            Only pay for the days you wear.
+                        </h1>
+                        <p class="text-base md:text-lg text-slate-200 mb-6 font-light">
+                            Premium apparel rentals for themed parties, weddings, cultural celebrations, performances, and gala events. Keep outfits for trial or transit days entirely for free.
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <!-- Filters & Search -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 font-serif">Curated Event Wardrobes</h2>
+                        <p class="text-slate-500 mt-1">Rent beautiful costumes and outfits individually or in bulk for groups.</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-search text-slate-400"></i>
+                            </div>
+                            <input type="text" id="searchInput" placeholder="Search costumes..." class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg w-full focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                        </div>
+                        <select id="categoryFilter" class="border border-slate-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-slate-700 w-full sm:w-auto">
+                            <option value="All">All Categories</option>
+                            <option value="Cultural / Traditional">Traditional & Cultural</option>
+                            <option value="Gala & Dance">Gala & Dance Wear</option>
+                            <option value="Theatrical & Historic">Theatrical & Historic</option>
+                            <option value="Theme Parties & Cosplay">Theme Parties & Cosplay</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Costume Grid -->
+                <div id="costumeGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Dynamically inserted via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CART VIEW -->
+        <div id="cartView" class="view-section bg-slate-50 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 font-serif">Selected Outfits Cart</h2>
+                
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Cart Items -->
+                    <div class="lg:w-2/3">
+                        <div id="cartItemsContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="lg:w-1/3">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-24">
+                            <h3 class="text-xl font-bold text-slate-900 mb-4 font-serif">Price Estimate</h3>
+                            <div class="space-y-3 mb-6 pb-6 border-b border-slate-100">
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Subtotal (Active wear days only)</span>
+                                    <span id="cartSubtotal" class="font-semibold text-slate-900">QAR 0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600 text-sm">
+                                    <span class="text-emerald-600 font-medium">Transit & Fitting days</span>
+                                    <span class="text-emerald-600 font-semibold">FREE</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="font-bold text-slate-900 text-lg">Total Cost</span>
+                                <span id="cartTotal" class="text-2xl font-bold text-brand-600">QAR 0.00</span>
+                            </div>
+                            <button onclick="processCheckout()" id="checkoutBtn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+                                <i class="fa-solid fa-circle-check"></i> Book Now
+                            </button>
+                            <p class="text-xs text-slate-400 text-center mt-4">No pre-payment required. Pay when you pick up at our Doha boutique showroom.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RESERVATIONS / BOOKINGS VIEW -->
+        <div id="bookingsView" class="view-section py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="bg-brand-100 text-brand-600 p-3 rounded-full">
+                        <i class="fa-solid fa-list-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 font-serif">Your Reservations</h2>
+                        <p class="text-slate-500">Track and manage your upcoming rentals, holding durations, and exact pickup windows.</p>
+                    </div>
+                </div>
+                
+                <div id="bookingsContainer" class="space-y-4">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. INFORMATION / OPERATION GUIDE VIEW -->
+        <div id="infoView" class="view-section py-12">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center font-serif">Pick-up & Boutique Showroom Guide</h2>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <!-- Stylized Banner instead of Map -->
+                    <div class="bg-slate-900 text-white py-12 px-8 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-20 bg-center"></div>
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <div class="bg-brand-100 text-brand-600 h-14 w-14 rounded-full flex items-center justify-center mb-4 shadow-md">
+                                <i class="fa-solid fa-location-dot text-2xl"></i>
+                            </div>
+                            <h4 class="font-serif text-2xl font-bold">RentStyle Boutique & Showroom</h4>
+                            <p class="text-sm text-slate-200 mt-1">West Bay Galleria, Floor 2, Suite 204, Doha, Qatar</p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-amber-500"></i> Boutique Hours
+                            </h3>
+                            <ul class="space-y-3 text-slate-600">
+                                <li class="flex justify-between border-b border-slate-100 pb-2">
+                                    <span>Sunday - Thursday</span>
+                                    <span class="font-medium text-slate-900">10:00 AM - 9:00 PM</span>
+                                </li>
+                                <li class="flex justify-between border-b border-slate-100 pb-2">
+                                    <span>Friday (Evening only)</span>
+                                    <span class="font-medium text-slate-900">4:00 PM - 10:00 PM</span>
+                                </li>
+                                <li class="flex justify-between pb-2">
+                                    <span>Saturday</span>
+                                    <span class="font-medium text-slate-900">11:00 AM - 8:00 PM</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-brand-600"></i> Active-Day Billing Terms
+                            </h3>
+                            <ul class="space-y-3 text-slate-600 text-sm list-disc pl-5">
+                                <li><strong>No Double Charge:</strong> Reserve your outfit several days prior to your party/wedding. You only pay for the day you will wear it.</li>
+                                <li><strong>Hassle-Free Returns:</strong> Drop-off must be completed on or before your confirmed Return Date to avoid minor daily extension fees.</li>
+                                <li><strong>Fitting Service:</strong> Walk-ins are welcome for personalized adjustments, fittings, and styling consultations at our Doha showroom.</li>
+                                <li>All reservations can be settled on-site via Credit/Debit Cards, Google Pay, Apple Pay, or cash.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- OVERLAY DETAILED BOOKING MODAL -->
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl relative z-10 flex flex-col md:flex-row overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalPanel">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 h-8 w-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-slate-800 shadow-sm transition-colors z-20 md:bg-slate-100 md:text-slate-500 md:shadow-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Left side: Showcase Image -->
+            <div class="md:w-1/2 bg-slate-100 h-64 md:h-auto relative">
+                <img id="modalImage" src="" alt="Costume" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Right side: Configurable Booking Form -->
+            <div class="md:w-1/2 p-6 md:p-8 flex flex-col max-h-[90vh] overflow-y-auto">
+                <div class="mb-4">
+                    <span id="modalCategory" class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1 block">Category</span>
+                    <h3 id="modalTitle" class="text-2xl font-serif font-bold text-slate-900 mb-2">Costume Name</h3>
+                    <p id="modalDesc" class="text-slate-600 text-sm leading-relaxed mb-3">Item details.</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl font-bold text-slate-900" id="modalPrice">QAR 0</span>
+                        <span class="text-slate-500 text-sm">/ active wear day</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-grow">
+                    <h4 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-check text-brand-600"></i>
+                        Rent Details & Dates
+                    </h4>
+                    
+                    <form id="bookingForm" class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Pick-up Date</label>
+                                <input type="date" id="pickupDate" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Return Date</label>
+                                <input type="date" id="returnDate" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Usage Days selector -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-medium text-slate-500">Days of Active Use (Wear Days)</label>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                                    <i class="fa-solid fa-piggy-bank"></i> Fitting/Trial days are FREE!
+                                </span>
+                            </div>
+                            <input type="number" id="usageDays" min="1" value="1" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            <p class="text-[10px] text-slate-400 mt-1" id="usageHelpText">How many days will you actively wear this outfit for your events?</p>
+                        </div>
+                        
+                        <!-- Bulk Order Support -->
+                        <div class="grid grid-cols-1 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Quantity (Perfect for families, troupes or party groups)</label>
+                                <input type="number" id="bookingQuantity" min="1" max="50" value="1" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-slate-200 pt-3 mt-3">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-500">Total Holding Window:</span>
+                                <span class="font-medium text-slate-800" id="durationCalc">0 days</span>
+                            </div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-500">Billed Active Days:</span>
+                                <span class="font-bold text-emerald-600" id="chargedDaysCalc">1 wear day</span>
+                            </div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-500">Quantity:</span>
+                                <span class="font-medium text-slate-800" id="quantityCalc">1 item</span>
+                            </div>
+                            <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-200 border-dashed">
+                                <span class="text-slate-700 font-bold text-sm">Item Estimate:</span>
+                                <span class="text-xl font-bold text-brand-600" id="totalCalc">QAR 0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 rounded-xl transition-colors shadow-md mt-2 flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Add to Outfit Cart</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-32 opacity-0 transition-all duration-300 z-50">
+        <div class="bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4">
+            <div id="toastIcon" class="bg-emerald-500/20 text-emerald-400 rounded-full h-8 w-8 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h5 class="font-medium text-sm" id="toastTitle">Success!</h5>
+                <p class="text-xs text-slate-300 mt-0.5" id="toastMessage">Action completed.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footers -->
+    <footer class="bg-slate-950 text-slate-400 py-12 mt-auto border-t border-slate-850">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-shirt text-brand-500 text-2xl"></i>
+                    <span class="font-serif text-2xl font-bold text-white tracking-tight">RentStyle</span>
+                </div>
+                <p class="text-sm max-w-sm">Doha's leading platform for designer outfit rentals, traditional cultural clothing, and themed costume wardrobes. Enjoy luxury dress opportunities with transparent, active-wear billing.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Quick Navigation</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><button onclick="switchView('catalogView')" class="hover:text-amber-400 transition-colors">Outfits Catalog</button></li>
+                    <li><button onclick="switchView('infoView')" class="hover:text-amber-400 transition-colors">Showroom & Collection Info</button></li>
+                    <li><button onclick="switchView('cartView')" class="hover:text-amber-400 transition-colors">Our Cart</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Contact & Support</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><i class="fa-solid fa-envelope w-5 text-amber-500"></i> rentals@rentstyle.qa</li>
+                    <li><i class="fa-solid fa-phone w-5 text-amber-500"></i> +974 4432 9900</li>
+                    <li><i class="fa-solid fa-location-dot w-5 text-amber-500"></i> West Bay, Doha, Qatar</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // High-quality relevant Unsplash photography to remove placeholders
+        const costumes = [
+            { 
+                id: 1, 
+                name: "Indian Lehenga", 
+                category: "Cultural / Traditional", 
+                price: 85, 
+                description: "Stunning handcrafted Lehenga Choli with extensive embroidery and premium silk/georgette fabric. Ideal for Sangeet, weddings, and traditional festive dances.", 
+                image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 2, 
+                name: "Kurta Pajama", 
+                category: "Cultural / Traditional", 
+                price: 45, 
+                description: "Elegant silk-blend Kurta paired with comfortable pajamas and a polished contrast Nehru vest. A perfect look for festive galas, weddings, and cultural skits.", 
+                image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 3, 
+                name: "Dance Saree", 
+                category: "Gala & Dance", 
+                price: 60, 
+                description: "Authentic, pleated dance saree with rich gold borders. Configured specially for unrestricted movement and stunning presence.", 
+                image: "https://images.unsplash.com/photo-1610030469668-93535c17b6b3?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 4, 
+                name: "Princess Gown", 
+                category: "Theatrical & Historic", 
+                price: 75, 
+                description: "An authentic noble velvet gown featuring historic corsetry, lace sleeves, and exquisite detailing. Fit for galas or theatrical performances.", 
+                image: "https://images.unsplash.com/photo-1518049360754-ee01242c7554?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 5, 
+                name: "Vintage Tunic", 
+                category: "Theatrical & Historic", 
+                price: 70, 
+                description: "Exquisitely tailored Renaissance period doublet with classic puffed breeches, perfect for dramatic plays and historic period events.", 
+                image: "https://images.unsplash.com/photo-1558507652-2d9626c4e67a?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 6, 
+                name: "Disco Outfit", 
+                category: "Gala & Dance", 
+                price: 35, 
+                description: "Spangled, colorful retro disco jumpsuits. Extremely comfortable, flexible, and sparkling under spotlight setups.", 
+                image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 7, 
+                name: "Astronaut Suit", 
+                category: "Theme Parties & Cosplay", 
+                price: 80, 
+                description: "Replicated NASA astronaut suit complete with detailed badges, realistic helmet, and secure utility straps. Fun for theme parties.", 
+                image: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 8, 
+                name: "Knight Armor", 
+                category: "Theatrical & Historic", 
+                price: 90, 
+                description: "Highly polished lightweight chestplate armor, mail links, and classic red cape. Perfect for historic dramatic roles.", 
+                image: "https://images.unsplash.com/photo-1580210217643-cf8eb78b277c?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 9, 
+                name: "Wizard Robe", 
+                category: "Theme Parties & Cosplay", 
+                price: 45, 
+                description: "Beautifully draped star-accented velvet robes, peaked wizard hat, and matching accessory. Ideal for magic performances.", 
+                image: "https://images.unsplash.com/photo-1514894780887-121968d00567?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            },
+            { 
+                id: 10, 
+                name: "Pirate Costume", 
+                category: "Theatrical & Historic", 
+                price: 55, 
+                description: "Featuring a gold-trimmed long coat, matching tricorn hat, ruffled inner-shirt, and vintage faux-leather belt.", 
+                image: "https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80&w=600&auto=format&fit=crop", 
+                available: true 
+            }
+        ];
+
+        // Global Application State
+        let currentSelectedCostume = null;
+        let cart = [];
+        let bookings = [];
+
+        function switchView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active-view');
+            });
+            // Show selected view
+            document.getElementById(viewId).classList.add('active-view');
+            
+            // Update Navigation Highlighting
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('text-brand-600', 'border-brand-600');
+                el.classList.add('text-slate-500', 'border-transparent');
+            });
+            
+            const activeLink = document.getElementById('nav-' + viewId);
+            if(activeLink) {
+                activeLink.classList.remove('text-slate-500', 'border-transparent');
+                activeLink.classList.add('text-brand-600', 'border-brand-600');
+            }
+
+            // Populate calculations or renders
+            if(viewId === 'cartView') renderCart();
+            if(viewId === 'bookingsView') renderBookings();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderCostumes(filterText = "", category = "All") {
+            const grid = document.getElementById('costumeGrid');
+            grid.innerHTML = '';
+
+            const filtered = costumes.filter(c => {
+                const matchesText = c.name.toLowerCase().includes(filterText.toLowerCase()) || 
+                                    c.description.toLowerCase().includes(filterText.toLowerCase());
+                const matchesCategory = category === "All" || c.category === category;
+                return matchesText && matchesCategory;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500">No matches found for your search details.</div>`;
+                return;
+            }
+
+            filtered.forEach(costume => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 group cursor-pointer flex flex-col h-full";
+                card.onclick = () => openModal(costume);
+
+                card.innerHTML = `
+                    <div class="relative h-72 overflow-hidden bg-slate-100">
+                        <img src="${costume.image}" alt="${costume.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white/95 backdrop-blur text-brand-700 text-sm font-black px-3 py-1.5 rounded-full shadow-md border border-brand-100">
+                            QAR ${costume.price} <span class="font-normal text-xs text-slate-500">/ day used</span>
+                        </div>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 mb-1">${costume.category}</span>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 leading-snug font-serif">${costume.name}</h3>
+                        <p class="text-slate-500 text-sm line-clamp-3 mb-4 flex-grow">${costume.description}</p>
+                        <div class="text-[11px] text-emerald-600 font-semibold mb-3 flex items-center gap-1">
+                            <i class="fa-solid fa-tags"></i> Fitting & preparation days are FREE
+                        </div>
+                        <button class="w-full bg-slate-50 group-hover:bg-brand-600 text-slate-700 group-hover:text-white border border-slate-200 group-hover:border-brand-600 py-2.5 rounded-xl font-medium transition-colors text-sm flex justify-center items-center gap-2">
+                            <i class="fa-regular fa-calendar-plus"></i> Configure Reservation
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search inputs
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+
+        searchInput.addEventListener('input', () => renderCostumes(searchInput.value, categoryFilter.value));
+        categoryFilter.addEventListener('change', () => renderCostumes(searchInput.value, categoryFilter.value));
+
+        // Date variables
+        const today = new Date().toISOString().split('T')[0];
+        const pickupInput = document.getElementById('pickupDate');
+        const returnInput = document.getElementById('returnDate');
+        const usageInput = document.getElementById('usageDays');
+        
+        pickupInput.min = today;
+        returnInput.min = today;
+
+        function openModal(costume) {
+            currentSelectedCostume = costume;
+            
+            document.getElementById('modalImage').src = costume.image;
+            document.getElementById('modalCategory').textContent = costume.category;
+            document.getElementById('modalTitle').textContent = costume.name;
+            document.getElementById('modalDesc').textContent = costume.description;
+            document.getElementById('modalPrice').textContent = `QAR ${costume.price}`;
+            
+            // Set standard pickup today & return 2 days later as comfortable default
+            const tomorrowPlusOne = new Date();
+            tomorrowPlusOne.setDate(tomorrowPlusOne.getDate() + 2);
+            
+            pickupInput.value = today;
+            returnInput.value = tomorrowPlusOne.toISOString().split('T')[0];
+            
+            // Set default active usage day
+            usageInput.value = 1;
+            document.getElementById('bookingQuantity').value = 1;
+            
+            updateCalculations();
+
+            const modal = document.getElementById('bookingModal');
+            const panel = document.getElementById('modalPanel');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                panel.classList.remove('opacity-0', 'scale-95');
+                panel.classList.add('opacity-100', 'scale-100');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('bookingModal');
+            const panel = document.getElementById('modalPanel');
+            
+            panel.classList.remove('opacity-100', 'scale-100');
+            panel.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                currentSelectedCostume = null;
+            }, 300);
+        }
+
+        function updateCalculations() {
+            const pickup = new Date(pickupInput.value);
+            const dropoff = new Date(returnInput.value);
+            const quantity = parseInt(document.getElementById('bookingQuantity').value) || 1;
+            
+            if (!pickupInput.value || !returnInput.value) return;
+
+            // Enforce dropoff date is at least the pickup date
+            if (dropoff < pickup) {
+                returnInput.value = pickupInput.value;
+                dropoff.setTime(pickup.getTime());
+            }
+
+            // Calculate total window days (inclusive of pickup and dropoff dates)
+            const diffTime = Math.abs(dropoff - pickup);
+            const holdingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; 
+
+            // Constraint: Usage days can never be more than the total holding window
+            usageInput.max = holdingDays;
+            let usageVal = parseInt(usageInput.value) || 1;
+            if (usageVal > holdingDays) {
+                usageVal = holdingDays;
+                usageInput.value = holdingDays;
+            } else if (usageVal < 1) {
+                usageVal = 1;
+                usageInput.value = 1;
+            }
+
+            // Update DOM
+            document.getElementById('durationCalc').textContent = `${holdingDays} day${holdingDays > 1 ? 's' : ''} total holding`;
+            document.getElementById('chargedDaysCalc').textContent = `${usageVal} day${usageVal > 1 ? 's' : ''} in use`;
+            document.getElementById('quantityCalc').textContent = `${quantity} outfit${quantity > 1 ? 's' : ''}`;
+            
+            if (currentSelectedCostume) {
+                // Rent cost based purely on active event days
+                const total = usageVal * currentSelectedCostume.price * quantity;
+                document.getElementById('totalCalc').textContent = `QAR ${total.toFixed(2)}`;
+            }
+        }
+
+        // Interactive dynamic calculations
+        pickupInput.addEventListener('change', () => {
+            returnInput.min = pickupInput.value;
+            updateCalculations();
+        });
+        returnInput.addEventListener('change', updateCalculations);
+        usageInput.addEventListener('input', updateCalculations);
+        document.getElementById('bookingQuantity').addEventListener('input', updateCalculations);
+
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(!currentSelectedCostume) return;
+
+            const pickup = new Date(pickupInput.value);
+            const dropoff = new Date(returnInput.value);
+            const qty = parseInt(document.getElementById('bookingQuantity').value);
+            const diffDays = Math.ceil(Math.abs(dropoff - pickup) / (1000 * 60 * 60 * 24)) + 1; 
+            const usageDays = parseInt(usageInput.value);
+
+            const itemTotal = usageDays * currentSelectedCostume.price * qty;
+
+            const cartItem = {
+                id: Date.now().toString(),
+                costume: currentSelectedCostume,
+                pickupDate: pickupInput.value,
+                returnDate: returnInput.value,
+                holdingDays: diffDays,
+                usageDays: usageDays,
+                quantity: qty,
+                total: itemTotal
+            };
+
+            cart.push(cartItem);
+            updateCartBadge();
+            closeModal();
+            showToast('Outfit Added', `${qty}x "${currentSelectedCostume.name}" is now in your cart.`);
+        });
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if(cart.length > 0) {
+                badge.textContent = cart.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            if(cart.length === 0) {
+                container.innerHTML = `
+                    <div class="p-12 text-center flex flex-col items-center">
+                        <div class="bg-slate-100 text-slate-400 h-16 w-16 rounded-full flex items-center justify-center mb-4 text-2xl">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">Your Outfit Cart is Empty</h4>
+                        <p class="text-slate-500 text-sm mb-6">Explore our curated collections of traditional, dance, and festive gala outfits.</p>
+                        <button onclick="switchView('catalogView')" class="text-brand-600 font-semibold hover:underline">Browse Catalog</button>
+                    </div>
+                `;
+                document.getElementById('cartSubtotal').textContent = `QAR 0.00`;
+                document.getElementById('cartTotal').textContent = `QAR 0.00`;
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            checkoutBtn.disabled = false;
+            let html = '<ul class="divide-y divide-slate-100">';
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                subtotal += item.total;
+                const pDate = new Date(item.pickupDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                const rDate = new Date(item.returnDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                html += `
+                    <li class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <img src="${item.costume.image}" alt="costume" class="h-28 w-24 object-cover rounded-lg bg-slate-100 shrink-0 shadow-sm border border-slate-100">
+                        <div class="flex-grow">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h4 class="font-bold text-slate-900 font-serif text-lg">${item.costume.name}</h4>
+                                <span class="bg-emerald-50 text-emerald-700 font-bold text-[10px] px-2 py-0.5 rounded-full border border-emerald-100">
+                                    Charged for ${item.usageDays} wear day${item.usageDays > 1 ? 's' : ''} only
+                                </span>
+                            </div>
+                            <p class="text-xs text-brand-600 font-medium mb-2">${item.costume.category}</p>
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500">
+                                <span><i class="fa-regular fa-calendar text-slate-400 mr-1"></i> ${pDate} to ${rDate}</span>
+                                <span><i class="fa-solid fa-layer-group text-slate-400 mr-1"></i> Qty: ${item.quantity}</span>
+                                <span class="text-emerald-600 font-medium"><i class="fa-solid fa-clock text-emerald-400 mr-1"></i> ${item.holdingDays} days total holding</span>
+                            </div>
+                        </div>
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto mt-4 sm:mt-0 gap-4">
+                            <div class="text-right">
+                                <span class="font-bold text-lg text-slate-900 block">QAR ${item.total.toFixed(2)}</span>
+                                <span class="text-[10px] text-slate-400 block">${item.usageDays} days x QAR ${item.costume.price} x ${item.quantity} qty</span>
+                            </div>
+                            <button onclick="removeFromCart('${item.id}')" class="text-slate-400 hover:text-red-500 transition-colors p-2">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </li>
+                `;
+            });
+
+            html += '</ul>';
+            container.innerHTML = html;
+
+            document.getElementById('cartSubtotal').textContent = `QAR ${subtotal.toFixed(2)}`;
+            document.getElementById('cartTotal').textContent = `QAR ${subtotal.toFixed(2)}`;
+        }
+
+        function processCheckout() {
+            if(cart.length === 0) return;
+
+            const orderId = 'RNT-' + Math.floor(Math.random() * 900000 + 100000);
+            
+            cart.forEach(item => {
+                bookings.push({
+                    ...item,
+                    orderId: orderId,
+                    status: 'Confirmed',
+                    bookingDate: new Date().toISOString()
+                });
+            });
+
+            cart = []; 
+            updateCartBadge();
+            
+            showToast('Booking Successful!', `Your reservation ${orderId} has been confirmed. See pickup instructions.`);
+            switchView('bookingsView');
+        }
+
+        function renderBookings() {
+            const container = document.getElementById('bookingsContainer');
+            
+            if(bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center flex flex-col items-center">
+                        <div class="bg-slate-100 text-slate-400 h-16 w-16 rounded-full flex items-center justify-center mb-4 text-2xl">
+                            <i class="fa-regular fa-calendar-xmark"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-2">No Active Reservations Found</h4>
+                        <p class="text-slate-500 text-sm">Pick outfits from our collection to secure your event garments.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sortedBookings = [...bookings].sort((a, b) => new Date(a.pickupDate) - new Date(b.pickupDate));
+            
+            let html = '';
+            sortedBookings.forEach(item => {
+                const pDate = new Date(item.pickupDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+                const rDate = new Date(item.returnDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+
+                html += `
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col md:flex-row gap-6 items-start">
+                        <img src="${item.costume.image}" alt="costume" class="h-32 w-24 object-cover rounded-lg bg-slate-100 shrink-0 mx-auto md:mx-0 shadow-sm border">
+                        
+                        <div class="flex-grow w-full">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 mb-2 border border-emerald-150">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span> Booking Confirmed
+                                    </span>
+                                    <h4 class="font-bold text-xl text-slate-900 font-serif">${item.costume.name}</h4>
+                                </div>
+                                <span class="text-xs text-slate-400 font-mono">#${item.orderId}</span>
+                            </div>
+                            
+                            <div class="grid sm:grid-cols-2 gap-4 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div>
+                                    <span class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pick-up Window Open</span>
+                                    <span class="text-sm font-medium text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-box-open text-brand-600"></i> ${pDate}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Boutique Return Target</span>
+                                    <span class="text-sm font-medium text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-rotate-left text-amber-500"></i> ${rDate}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col justify-center items-center md:items-end md:w-48 md:border-l md:border-slate-100 md:pl-6 w-full pt-4 md:pt-0 border-t border-slate-100 md:border-t-0 mt-4 md:mt-0">
+                            <span class="text-xs text-slate-500 mb-1">Amount Due on Pick-up</span>
+                            <span class="font-bold text-xl text-slate-900 mb-1">QAR ${item.total.toFixed(2)}</span>
+                            <div class="text-[10px] text-emerald-600 font-bold mb-3">Charged for ${item.usageDays} of ${item.holdingDays} days</div>
+                            <span class="text-xs font-medium bg-slate-100 text-slate-600 px-2 py-1 rounded-md">Quantity Selected: ${item.quantity}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            if(message) document.getElementById('toastMessage').textContent = message;
+            
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 4000);
+        }
+
+        // Initial setup
+        window.onload = () => {
+            renderCostumes();
+        };
+    </script>
+</body>
+</html>
