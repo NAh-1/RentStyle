@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts for sophisticated editorial contrast -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for crisp iconography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,14 +25,18 @@
                     },
                     colors: {
                         brand: {
-                            50: '#f5f7fa',
-                            100: '#e4ebf4',
-                            500: '#1b3b6f', // Premium Indigo
-                            600: '#21295c', 
-                            700: '#131b46', 
-                            900: '#060a22',
+                            50: '#f4f6f9',
+                            100: '#e1e6f0',
+                            500: '#1e3a68', // Deeper Premium Indigo
+                            600: '#172c54', 
+                            700: '#101e3d', 
+                            900: '#070d1e',
                             gold: '#d4af37' // Luxury Gold Accent
                         }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.05)',
+                        'glow': '0 0 20px rgba(212, 175, 55, 0.2)',
                     }
                 }
             }
@@ -44,7 +48,7 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #f8fafc;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -55,17 +59,25 @@
         }
         .view-section {
             display: none;
-            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .view-section.active-view {
             display: block;
         }
         @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
         .luxury-gradient {
-            background: linear-gradient(135deg, #1b3b6f 0%, #060a22 100%);
+            background: linear-gradient(135deg, #172c54 0%, #070d1e 100%);
         }
         .gold-border-glow {
             box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
@@ -73,56 +85,59 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased flex flex-col min-h-screen selection:bg-brand-500 selection:text-white">
 
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <nav class="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
+            <div class="flex justify-between h-18 py-3 items-center">
                 <!-- Branding Logo -->
-                <div class="flex items-center gap-2 cursor-pointer animate-pulse-slow" onclick="switchView('catalogView')">
-                    <div class="bg-brand-600 text-white p-2 rounded-lg shadow-md flex items-center justify-center">
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('catalogView')">
+                    <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center group-hover:bg-brand-500 transition-colors">
                         <i class="fa-solid fa-shirt text-lg"></i>
                     </div>
                     <div>
                         <span class="font-serif text-2xl font-bold text-brand-700 tracking-tight leading-none block">RentStyle</span>
-                        <span class="text-[9px] tracking-widest uppercase text-amber-600 font-extrabold block">Qatar Premium Wardrobe Hub</span>
+                        <span class="text-[9px] tracking-widest uppercase text-amber-600 font-extrabold block mt-0.5">Qatar Premium Wardrobe</span>
                     </div>
                 </div>
                 
                 <!-- Desktop Navigation Menu -->
-                <div class="hidden md:flex space-x-6 h-full">
-                    <button id="nav-catalogView" onclick="switchView('catalogView')" class="nav-link text-brand-600 border-brand-600 font-semibold border-b-2 px-1 h-full flex items-center transition-all text-sm">
+                <div class="hidden md:flex space-x-8 h-full items-center">
+                    <button id="nav-catalogView" onclick="switchView('catalogView')" class="nav-link text-brand-600 font-semibold relative after:absolute after:bottom-[-16px] after:left-0 after:w-full after:h-0.5 after:bg-brand-600 transition-all text-sm">
                         Browse Outfits
                     </button>
-                    <button id="nav-subscriptionView" onclick="switchView('subscriptionView')" class="nav-link text-slate-500 border-transparent hover:text-brand-600 hover:border-brand-600 border-b-2 font-medium px-1 h-full flex items-center transition-all text-sm relative">
-                        StylePass Membership
-                        <span class="absolute top-2 right-[-20px] bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase scale-90">Hot</span>
+                    <button id="nav-uploadView" onclick="switchView('uploadView')" class="nav-link text-slate-500 hover:text-brand-600 font-medium transition-all text-sm relative">
+                        List an Item
                     </button>
-                    <button id="nav-bookingsView" onclick="switchView('bookingsView')" class="nav-link text-slate-500 border-transparent hover:text-brand-600 hover:border-brand-600 border-b-2 font-medium px-1 h-full flex items-center transition-all text-sm">
+                    <button id="nav-subscriptionView" onclick="switchView('subscriptionView')" class="nav-link text-slate-500 hover:text-brand-600 font-medium transition-all text-sm relative">
+                        StylePass Membership
+                        <span class="absolute -top-3 -right-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase shadow-sm">Hot</span>
+                    </button>
+                    <button id="nav-bookingsView" onclick="switchView('bookingsView')" class="nav-link text-slate-500 hover:text-brand-600 font-medium transition-all text-sm">
                         My Bookings
                     </button>
-                    <button id="nav-monetizationView" onclick="switchView('monetizationView')" class="nav-link text-slate-500 border-transparent hover:text-brand-600 hover:border-brand-600 border-b-2 font-medium px-1 h-full flex items-center transition-all text-sm">
+                    <button id="nav-monetizationView" onclick="switchView('monetizationView')" class="nav-link text-slate-500 hover:text-brand-600 font-medium transition-all text-sm">
                         Business Framework
                     </button>
                 </div>
                 
                 <!-- Interaction Actions -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
                     <!-- Premium Status Badge -->
-                    <div id="premiumUserStatus" class="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-extrabold py-1 px-3 rounded-full shadow-sm">
+                    <div id="premiumUserStatus" class="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-extrabold py-1.5 px-3.5 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer">
                         <i class="fa-solid fa-crown"></i>
                         <span>STYLEPASS GOLD</span>
                     </div>
 
                     <!-- Cart Button -->
-                    <button onclick="switchView('cartView')" class="relative p-2.5 text-slate-600 hover:text-brand-600 hover:bg-slate-50 rounded-xl transition-all">
+                    <button onclick="switchView('cartView')" class="relative p-2.5 text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-all">
                         <i class="fa-solid fa-basket-shopping text-xl"></i>
-                        <span id="cartBadge" class="absolute top-1 right-1 bg-amber-500 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+                        <span id="cartBadge" class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-white hidden shadow-sm">0</span>
                     </button>
                     
                     <!-- Account Demo Indicator -->
-                    <button onclick="toggleGlobalSubscription()" title="Click to cycle simulated subscriber levels" class="bg-brand-100 hover:bg-brand-200 text-brand-700 h-10 px-3.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-user-tie"></i>
+                    <button onclick="toggleGlobalSubscription()" title="Click to cycle simulated subscriber levels" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 h-10 px-4 rounded-full font-bold text-xs transition-all flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-user-tie text-brand-600"></i>
                         <span id="navProfileName">Demo User</span>
                     </button>
                 </div>
@@ -135,169 +150,230 @@
 
         <!-- 1. CATALOG VIEW (DEFAULT) -->
         <div id="catalogView" class="view-section active-view">
-            <header class="luxury-gradient relative overflow-hidden text-white py-12 md:py-16">
-                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-linen.png')] opacity-25"></div>
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-10">
+            <header class="relative mx-2 sm:mx-6 lg:mx-8 mt-4 rounded-[2.5rem] overflow-hidden luxury-gradient text-white py-16 md:py-24 shadow-2xl">
+                <!-- High-fashion background image overlay -->
+                <div class="absolute inset-0 bg-[url('https://cdn.mos.cms.futurecdn.net/tyfYZPJ3Hc4QGWjWZijgAo.jpg')] bg-cover bg-center opacity-25 mix-blend-luminosity"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#070d1e] via-[#070d1e]/80 to-transparent"></div>
+                
+                <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 flex flex-col md:flex-row items-center gap-12">
                     <div class="md:w-3/5 text-left">
-                        <span class="bg-amber-400/20 text-amber-300 font-extrabold tracking-wider uppercase text-xs px-3.5 py-1.5 rounded-full mb-5 inline-block border border-amber-400/30">
-                            Occasion Wear ecosystem
+                        <span class="bg-white/10 backdrop-blur-md text-amber-300 font-extrabold tracking-widest uppercase text-[10px] px-4 py-2 rounded-full mb-6 inline-flex items-center gap-2 border border-white/10 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Occasion Wear Ecosystem
                         </span>
-                        <h1 class="text-4xl md:text-5xl font-serif font-extrabold mb-4 leading-tight">
-                            Smart Occasion Closets For Rent, Borrowing or Purchase.
+                        <h1 class="text-4xl md:text-6xl font-serif font-extrabold mb-5 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+                            Smart Closets For Rent or Purchase.
                         </h1>
-                        <p class="text-slate-200 text-sm md:text-base font-light mb-6 max-w-xl">
-                            Dress beautifully for weddings, graduations, proms, or high-profile events. Maximize sustainable utility with dry-cleaning support, custom tailored fits, and comprehensive damage cover packages.
+                        <p class="text-slate-300 text-sm md:text-base font-light mb-8 max-w-lg leading-relaxed">
+                            Dress beautifully for weddings, graduations, proms, or high-profile events. Maximize sustainable utility with dry-cleaning support, custom tailored fits, and comprehensive damage covers.
                         </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="bg-white/10 text-slate-200 text-[11px] font-medium px-3 py-1.5 rounded-lg border border-white/10"><i class="fa-solid fa-repeat text-indigo-300 mr-1.5"></i>Transaction Safety</span>
-                            <span class="bg-white/10 text-slate-200 text-[11px] font-medium px-3 py-1.5 rounded-lg border border-white/10"><i class="fa-solid fa-shield text-emerald-300 mr-1.5"></i>Damage Protection</span>
-                            <span class="bg-white/10 text-slate-200 text-[11px] font-medium px-3 py-1.5 rounded-lg border border-white/10"><i class="fa-solid fa-gem text-amber-300 mr-1.5"></i>Sponsored Designer Exclusives</span>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-white/5 backdrop-blur-sm text-slate-200 text-xs font-medium px-4 py-2 rounded-full border border-white/10"><i class="fa-solid fa-repeat text-indigo-400 mr-2"></i>Transaction Safety</span>
+                            <span class="bg-white/5 backdrop-blur-sm text-slate-200 text-xs font-medium px-4 py-2 rounded-full border border-white/10"><i class="fa-solid fa-shield text-emerald-400 mr-2"></i>Damage Protection</span>
+                            <span class="bg-white/5 backdrop-blur-sm text-slate-200 text-xs font-medium px-4 py-2 rounded-full border border-white/10"><i class="fa-solid fa-gem text-amber-400 mr-2"></i>Designer Exclusives</span>
                         </div>
                     </div>
                     
                     <!-- Membership Conversion Banner widget -->
-                    <div class="md:w-2/5 w-full bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[9px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-wider">StylePass Club</div>
-                        <h3 class="text-lg font-bold font-serif mb-2 text-amber-300"><i class="fa-solid fa-crown mr-2"></i>Unlimited Luxury Access</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
-                            Subscribe to <strong class="text-white">StylePass</strong> for QAR 15/mo to completely waive platform transaction fees, obtain <span class="text-amber-300">free standard protection covers</span>, and score 15% off all rental catalog pricing.
+                    <div class="md:w-2/5 w-full bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden transform hover:-translate-y-1 transition-transform duration-500">
+                        <div class="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-amber-600 text-slate-900 text-[10px] font-black uppercase px-4 py-1.5 rounded-bl-2xl tracking-wider shadow-md">StylePass Club</div>
+                        <h3 class="text-2xl font-bold font-serif mb-3 text-white"><i class="fa-solid fa-crown mr-2 text-amber-400"></i>Unlimited Luxury</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                            Subscribe to <strong class="text-white">StylePass</strong> for QAR 15/mo to waive platform transaction fees, obtain <span class="text-amber-400 font-semibold">free protection covers</span>, and score 15% off catalog pricing.
                         </p>
-                        <button onclick="switchView('subscriptionView')" class="w-full bg-amber-400 hover:bg-amber-500 text-brand-900 text-xs font-extrabold py-2.5 rounded-xl transition-all shadow-md">
-                            View StylePass Plans <i class="fa-solid fa-chevron-right ml-1"></i>
+                        <button onclick="switchView('subscriptionView')" class="w-full bg-white text-brand-900 hover:bg-amber-400 hover:text-slate-900 text-sm font-extrabold py-3.5 rounded-2xl transition-all duration-300 shadow-lg">
+                            View StylePass Plans <i class="fa-solid fa-arrow-right ml-1"></i>
                         </button>
                     </div>
                 </div>
             </header>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <!-- Search, Filters and Sponsored highlights -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-10 gap-6">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 font-serif">Catalog Collections</h2>
-                        <p class="text-slate-500 text-xs">Curated authentic local and luxury apparel across Doha boutiques.</p>
+                        <h2 class="text-3xl font-bold text-slate-900 font-serif mb-1">Curated Collections</h2>
+                        <p class="text-slate-500 text-sm">Authentic local and luxury apparel across Doha boutiques.</p>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                    <div class="flex flex-wrap gap-2.5 w-full xl:w-auto">
                         <!-- Custom filter buttons -->
-                        <button onclick="filterGridCategory('All')" id="catBtn-All" class="cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-600 text-white shadow-sm transition-all">
+                        <button onclick="filterGridCategory('All')" id="catBtn-All" class="cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-slate-900 text-white shadow-md transition-all duration-300 transform hover:scale-105">
                             All Items
                         </button>
-                        <button onclick="filterGridCategory('Sponsored')" id="catBtn-Sponsored" class="cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
-                            <i class="fa-solid fa-star text-amber-500 mr-1.5"></i>Sponsored Specials
+                        <button onclick="filterGridCategory('Sponsored')" id="catBtn-Sponsored" class="cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-300 transform hover:scale-105">
+                            <i class="fa-solid fa-star text-amber-500 mr-1.5"></i>Sponsored
                         </button>
-                        <button onclick="filterGridCategory('Weddings & Cultural')" id="catBtn-Weddings" class="cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
+                        <button onclick="filterGridCategory('Weddings & Cultural')" id="catBtn-Weddings" class="cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-300 transform hover:scale-105">
                             Cultural & Wedding
                         </button>
-                        <button onclick="filterGridCategory('Proms & Graduations')" id="catBtn-Proms" class="cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
+                        <button onclick="filterGridCategory('Proms & Graduations')" id="catBtn-Proms" class="cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-300 transform hover:scale-105">
                             Graduation & Prom
                         </button>
-                        <button onclick="filterGridCategory('Parties & Formals')" id="catBtn-Parties" class="cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
+                        <button onclick="filterGridCategory('Parties & Formals')" id="catBtn-Parties" class="cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-300 transform hover:scale-105">
                             Formals
                         </button>
                     </div>
                 </div>
 
-                <!-- Live search bar input dynamic updates -->
-                <div class="relative max-w-lg mb-8">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                        <i class="fa-solid fa-search text-slate-400 text-xs"></i>
+                <div class="relative max-w-md mb-10">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-slate-400 text-sm"></i>
                     </div>
-                    <input type="text" id="searchInput" placeholder="Search designers, tuxedos, drapes..." class="pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl w-full focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-xs transition-all bg-white shadow-xs">
+                    <input type="text" id="searchInput" placeholder="Search designers, tuxedos, drapes..." class="pl-11 pr-4 py-3.5 border border-slate-200 rounded-2xl w-full focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm transition-all bg-white shadow-soft">
                 </div>
 
                 <!-- LIVE GRID OF RENTSTYLE APPARELS -->
-                <div id="outfitGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div id="outfitGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     <!-- Javascript injections populate dynamically -->
                 </div>
             </div>
         </div>
 
+        <!-- NEW: LIST AN ITEM / UPLOAD VIEW -->
+        <div id="uploadView" class="view-section py-12 bg-slate-50">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+                    <div class="bg-brand-600 px-8 py-10 text-white text-center relative">
+                        <h2 class="text-3xl font-bold font-serif mb-2">List Your Outfit</h2>
+                        <p class="text-slate-200 text-sm max-w-md mx-auto">Upload your premium occasion wear to the marketplace and earn money through rentals or second-hand purchases.</p>
+                    </div>
+                    <form id="uploadForm" class="p-8 space-y-6" onsubmit="handleUpload(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Outfit Name</label>
+                                <input type="text" id="upName" required placeholder="e.g. Designer Tuxedo" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Category</label>
+                                <select id="upCategory" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+                                    <option value="Weddings & Cultural">Weddings & Cultural</option>
+                                    <option value="Proms & Graduations">Proms & Graduations</option>
+                                    <option value="Parties & Formals">Parties & Formals</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Rent Price (QAR/day)</label>
+                                <input type="number" id="upRent" required min="10" placeholder="50" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Buy Price (QAR)</label>
+                                <input type="number" id="upBuy" required min="50" placeholder="200" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Available Stock</label>
+                                <input type="number" id="upStock" required min="1" max="50" value="1" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Description</label>
+                            <textarea id="upDesc" required rows="3" placeholder="Describe the fit, material, and ideal occasion..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Image URL (Optional)</label>
+                            <input type="url" id="upImg" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100">
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+                                Publish to Marketplace
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- 2. SUBSCRIPTION PLANS VIEW -->
-        <div id="subscriptionView" class="view-section py-10 bg-slate-100">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-10">
-                    <span class="bg-brand-100 text-brand-600 font-extrabold text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider">StylePass Club</span>
-                    <h2 class="text-3xl font-extrabold text-slate-900 font-serif mt-3">Flexible Monthly Plans</h2>
-                    <p class="text-slate-500 text-xs mt-2">Ditch high shopping bills for high-end events. Pick a flexible plan to waive security deposits, transactional fees, and reduce dry cleaning rates.</p>
+        <div id="subscriptionView" class="view-section py-16 bg-slate-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="bg-brand-100 text-brand-600 font-extrabold text-[10px] px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">StylePass Club</span>
+                    <h2 class="text-4xl font-extrabold text-slate-900 font-serif mt-5 mb-4">Flexible Monthly Plans</h2>
+                    <p class="text-slate-500 text-sm">Ditch high shopping bills for high-end events. Pick a flexible plan to waive security deposits, transactional fees, and reduce dry cleaning rates.</p>
                 </div>
 
                 <!-- Membership Grid -->
-                <div class="grid md:grid-cols-3 gap-6 items-stretch">
+                <div class="grid lg:grid-cols-3 gap-8 items-stretch">
                     
                     <!-- Basic Free Plan -->
-                    <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-xs transition-transform hover:scale-[1.01]">
+                    <div class="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col justify-between shadow-soft hover:shadow-lg transition-all duration-300">
                         <div>
-                            <span class="text-slate-400 text-[10px] font-bold uppercase tracking-widest block">Standard</span>
-                            <h3 class="text-xl font-bold font-serif text-slate-800 mt-1">Pay-as-you-go</h3>
-                            <p class="text-xs text-slate-400 mt-2">Perfect for casual, single-use customers who rent less than once a year.</p>
+                            <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest block mb-2">Standard</span>
+                            <h3 class="text-2xl font-bold font-serif text-slate-800">Pay-as-you-go</h3>
+                            <p class="text-sm text-slate-500 mt-3 leading-relaxed">Perfect for casual, single-use customers who rent less than once a year.</p>
                             
-                            <div class="my-6">
-                                <span class="text-2xl font-bold text-slate-900">QAR 0</span>
-                                <span class="text-slate-400 text-xs">/ month</span>
+                            <div class="my-8">
+                                <span class="text-4xl font-black text-slate-900">QAR 0</span>
+                                <span class="text-slate-400 text-sm font-medium">/ month</span>
                             </div>
 
-                            <ul class="space-y-3.5 border-t border-slate-100 pt-4 text-xs text-slate-600">
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-slate-300"></i> Flat Transaction Fee (5% per order)</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-slate-300"></i> Protection Insurance Costs apply</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-slate-300"></i> Full security deposits needed</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> standard fit testing</li>
+                            <ul class="space-y-4 border-t border-slate-100 pt-6 text-sm text-slate-600 font-medium">
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-slate-300 text-lg"></i> Flat Transaction Fee (5%)</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-slate-300 text-lg"></i> Protection Insurance Costs</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-xmark text-slate-300 text-lg"></i> Full security deposits needed</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> Standard fit testing</li>
                             </ul>
                         </div>
-                        <button id="subBtn-free" onclick="activateSubscriptionTier('free')" class="w-full mt-8 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-all">
+                        <button id="subBtn-free" onclick="activateSubscriptionTier('free')" class="w-full mt-10 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl text-sm transition-all">
                             Current Standard Plan
                         </button>
                     </div>
 
                     <!-- Gold StylePass Plan (Best Value Highlighted) -->
-                    <div class="bg-white border-2 border-amber-500 rounded-2xl p-6 flex flex-col justify-between shadow-lg relative transform md:-translate-y-2">
-                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-500 text-slate-950 font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider">Most Popular</div>
+                    <div class="bg-white border-[3px] border-amber-400 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative transform lg:-translate-y-4 z-10">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 font-black text-[10px] px-5 py-2 rounded-full uppercase tracking-widest shadow-md">Most Popular</div>
                         <div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-amber-600 text-[10px] font-bold uppercase tracking-widest block">StylePass</span>
-                                <i class="fa-solid fa-crown text-amber-500 text-xs"></i>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-amber-600 text-[10px] font-black uppercase tracking-widest block">StylePass</span>
+                                <i class="fa-solid fa-crown text-amber-500 text-sm"></i>
                             </div>
-                            <h3 class="text-xl font-bold font-serif text-slate-900 mt-1">StylePass Gold</h3>
-                            <p class="text-xs text-slate-500 mt-2">Great for socialites, active professionals, and dance troupe organizers.</p>
+                            <h3 class="text-2xl font-bold font-serif text-slate-900">StylePass Gold</h3>
+                            <p class="text-sm text-slate-500 mt-3 leading-relaxed">Great for socialites, active professionals, and dance troupe organizers.</p>
                             
-                            <div class="my-6">
-                                <span class="text-4xl font-black text-brand-600">QAR 15</span>
-                                <span class="text-slate-400 text-xs">/ month</span>
+                            <div class="my-8">
+                                <span class="text-5xl font-black text-brand-600">QAR 15</span>
+                                <span class="text-slate-400 text-sm font-medium">/ month</span>
                             </div>
 
-                            <ul class="space-y-3.5 border-t border-slate-100 pt-4 text-xs text-slate-700">
-                                <li class="flex items-center gap-2 font-semibold text-emerald-700"><i class="fa-solid fa-circle-check text-emerald-500"></i> 15% discount on all rentals</li>
-                                <li class="flex items-center gap-2 font-semibold text-emerald-700"><i class="fa-solid fa-circle-check text-emerald-500"></i> No Transactional/Service Fees</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Free premium protective garment wrap</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> 1 standard damage protection cover</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500"></i> Priority fitting booking slots</li>
+                            <ul class="space-y-4 border-t border-slate-100 pt-6 text-sm text-slate-700">
+                                <li class="flex items-center gap-3 font-bold text-emerald-700"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> 15% discount on all rentals</li>
+                                <li class="flex items-center gap-3 font-bold text-emerald-700"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> No Transactional/Service Fees</li>
+                                <li class="flex items-center gap-3 font-medium"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> Premium protective garment wrap</li>
+                                <li class="flex items-center gap-3 font-medium"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> 1 standard damage protection cover</li>
+                                <li class="flex items-center gap-3 font-medium"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> Priority fitting booking slots</li>
                             </ul>
                         </div>
-                        <button id="subBtn-gold" onclick="activateSubscriptionTier('gold')" class="w-full mt-8 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-md">
+                        <button id="subBtn-gold" onclick="activateSubscriptionTier('gold')" class="w-full mt-10 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-black py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                             Activate StylePass Gold
                         </button>
                     </div>
 
                     <!-- Platinum VIP Plan -->
-                    <div class="bg-brand-900 border border-brand-800 text-white rounded-2xl p-6 flex flex-col justify-between shadow-xs">
+                    <div class="bg-brand-900 border border-brand-700 text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl">
                         <div>
-                            <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest block">Exclusive VIP</span>
-                            <h3 class="text-xl font-bold font-serif mt-1">StylePass Platinum</h3>
-                            <p class="text-xs text-slate-300 mt-2">All-inclusive VIP closet. For high-society gala organizers and professional groups.</p>
+                            <span class="text-amber-400 text-[10px] font-black uppercase tracking-widest block mb-2">Exclusive VIP</span>
+                            <h3 class="text-2xl font-bold font-serif text-white">StylePass Platinum</h3>
+                            <p class="text-sm text-slate-300 mt-3 leading-relaxed">All-inclusive VIP closet. For high-society gala organizers and professional groups.</p>
                             
-                            <div class="my-6">
-                                <span class="text-2xl font-bold text-amber-400">QAR 30</span>
-                                <span class="text-slate-300 text-xs">/ month</span>
+                            <div class="my-8">
+                                <span class="text-4xl font-black text-amber-400">QAR 30</span>
+                                <span class="text-slate-400 text-sm font-medium">/ month</span>
                             </div>
 
-                            <ul class="space-y-3.5 border-t border-white/10 pt-4 text-xs text-slate-300">
-                                <li class="flex items-center gap-2 text-amber-300"><i class="fa-solid fa-circle-check text-amber-400"></i> 25% discount on all rentals</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Zero Transaction fees</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Zero security deposits</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Full damage protection cover</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-400"></i> Free home deliveries & returns</li>
+                            <ul class="space-y-4 border-t border-brand-700/50 pt-6 text-sm text-slate-300 font-medium">
+                                <li class="flex items-center gap-3 text-amber-300 font-bold"><i class="fa-solid fa-circle-check text-amber-400 text-lg"></i> 25% discount on all rentals</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-amber-400 text-lg"></i> Zero Transaction fees</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-amber-400 text-lg"></i> Zero security deposits</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-amber-400 text-lg"></i> Full damage protection cover</li>
+                                <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-amber-400 text-lg"></i> Free home deliveries & returns</li>
                             </ul>
                         </div>
-                        <button id="subBtn-platinum" onclick="activateSubscriptionTier('platinum')" class="w-full mt-8 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 rounded-xl text-xs transition-all border border-white/20">
+                        <button id="subBtn-platinum" onclick="activateSubscriptionTier('platinum')" class="w-full mt-10 bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-2xl text-sm transition-all border border-white/20 backdrop-blur-sm">
                             Upgrade to Platinum
                         </button>
                     </div>
@@ -305,82 +381,82 @@
                 </div>
 
                 <!-- Simulation Info Alert -->
-                <div class="mt-8 bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-xs flex gap-3 items-center">
-                    <i class="fa-solid fa-circle-info text-base text-amber-600"></i>
-                    <p><strong>Interactive Demo Note:</strong> Selecting any plan above instantly changes your pricing profile. Try clicking "Activate StylePass Gold" and browse the catalog to see your prices instantly discounted!</p>
+                <div class="mt-12 bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl text-sm flex gap-4 items-center shadow-sm max-w-4xl mx-auto">
+                    <i class="fa-solid fa-circle-info text-2xl text-amber-500"></i>
+                    <p class="leading-relaxed"><strong>Interactive Demo Note:</strong> Selecting any plan above instantly changes your pricing profile. Try clicking "Activate StylePass Gold" and browse the catalog to see your prices instantly discounted!</p>
                 </div>
             </div>
         </div>
 
         <!-- 3. CART VIEW -->
-        <div id="cartView" class="view-section py-10 bg-slate-50">
+        <div id="cartView" class="view-section py-12 bg-[#f8fafc]">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center gap-2 mb-8">
-                    <button onclick="switchView('catalogView')" class="hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors mr-2 border border-slate-200 bg-white shadow-sm">
+                <div class="flex items-center gap-3 mb-10">
+                    <button onclick="switchView('catalogView')" class="hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition-colors mr-3 border border-slate-200 bg-white shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i> Keep Shopping
                     </button>
-                    <h2 class="text-2xl font-bold text-slate-900 font-serif">Your Wardrobe Bag</h2>
+                    <h2 class="text-3xl font-bold text-slate-900 font-serif">Your Wardrobe Bag</h2>
                 </div>
                 
-                <div class="flex flex-col lg:flex-row gap-6">
+                <div class="flex flex-col lg:flex-row gap-8">
                     <!-- Cart List Elements -->
                     <div class="lg:w-2/3">
-                        <div id="cartItemsContainer" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div id="cartItemsContainer" class="bg-white rounded-3xl shadow-soft border border-slate-200 overflow-hidden">
                             <!-- Injected dynamically via JS -->
                         </div>
                     </div>
                     
-                    <!-- Dynamic Totals Estimation panel with Monetization logic -->
+                    <!-- Dynamic Totals Estimation panel -->
                     <div class="lg:w-1/3">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-24">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4 font-serif border-b border-slate-100 pb-3">Order Invoice</h3>
+                        <div class="bg-white p-8 rounded-3xl shadow-soft border border-slate-200 sticky top-28">
+                            <h3 class="text-xl font-bold text-slate-900 mb-6 font-serif border-b border-slate-100 pb-4">Order Invoice</h3>
                             
-                            <div class="space-y-3.5 mb-6 text-xs">
-                                <div class="flex justify-between text-slate-500">
+                            <div class="space-y-4 mb-8 text-sm">
+                                <div class="flex justify-between text-slate-600 font-medium">
                                     <span>Subtotal</span>
-                                    <span id="cartSubtotal" class="font-semibold text-slate-900">QAR 0.00</span>
+                                    <span id="cartSubtotal" class="font-bold text-slate-900">QAR 0.00</span>
                                 </div>
                                 
-                                <!-- Monetization Element: Protection Insurance Fee -->
-                                <div class="flex justify-between items-center bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
+                                <!-- Monetization Element -->
+                                <div class="flex justify-between items-center bg-emerald-50/70 p-3 rounded-xl border border-emerald-100">
                                     <div>
-                                        <div class="font-bold text-emerald-800 flex items-center gap-1">
+                                        <div class="font-bold text-emerald-800 flex items-center gap-1.5 text-xs">
                                             <i class="fa-solid fa-shield-halved text-emerald-600"></i> Protection Insurance
                                         </div>
-                                        <p class="text-[9px] text-emerald-600/70">Waiver for minor rips, stains & cleaning</p>
+                                        <p class="text-[10px] text-emerald-600/80 mt-0.5">Waiver for minor rips & cleaning</p>
                                     </div>
                                     <div class="text-right">
-                                        <span id="cartProtectionFee" class="font-semibold text-emerald-800">QAR 0.00</span>
+                                        <span id="cartProtectionFee" class="font-bold text-emerald-800 text-sm">QAR 0.00</span>
                                     </div>
                                 </div>
 
-                                <!-- Monetization Element: Service Transaction Fee -->
-                                <div class="flex justify-between text-slate-500">
-                                    <div class="flex items-center gap-1">
+                                <!-- Monetization Element -->
+                                <div class="flex justify-between text-slate-600 font-medium">
+                                    <div class="flex items-center gap-1.5">
                                         <span>Platform Service Fee</span>
-                                        <i class="fa-regular fa-question-circle text-slate-400 cursor-pointer" title="Calculated as 5% flat of subtotal for standard guests. Waived for Gold & Platinum subscribers!"></i>
+                                        <i class="fa-regular fa-question-circle text-slate-400 cursor-pointer hover:text-brand-500 transition-colors" title="Calculated as 15% for rentals and 10% for purchases. Waived for Gold & Platinum subscribers!"></i>
                                     </div>
-                                    <span id="cartServiceFee" class="font-semibold text-slate-900">QAR 0.00</span>
+                                    <span id="cartServiceFee" class="font-bold text-slate-900">QAR 0.00</span>
                                 </div>
 
-                                <div class="flex justify-between text-slate-500">
+                                <div class="flex justify-between text-slate-600 font-medium">
                                     <span>Fitting & Sanitization Fees</span>
-                                    <span class="text-emerald-600 font-bold uppercase text-[10px]">FREE</span>
+                                    <span class="text-emerald-600 font-black uppercase text-[11px] tracking-wider bg-emerald-50 px-2 py-0.5 rounded-md">FREE</span>
                                 </div>
                             </div>
 
-                            <div class="flex justify-between items-center mb-6 border-t border-slate-200 pt-4">
-                                <span class="font-extrabold text-slate-900 text-base font-serif">Grand Total</span>
-                                <span id="cartTotal" class="text-2xl font-black text-brand-600">QAR 0.00</span>
+                            <div class="flex justify-between items-end mb-8 border-t border-slate-200 pt-6">
+                                <span class="font-extrabold text-slate-900 text-lg font-serif">Grand Total</span>
+                                <span id="cartTotal" class="text-3xl font-black text-brand-600 leading-none">QAR 0.00</span>
                             </div>
 
-                            <button onclick="processCheckout()" id="checkoutBtn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm">
-                                <i class="fa-solid fa-calendar-check"></i> Book & Schedule Pickup
+                            <button onclick="processCheckout()" id="checkoutBtn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl text-sm">
+                                <i class="fa-solid fa-calendar-check text-lg"></i> Book & Schedule Pickup
                             </button>
                             
-                            <div class="mt-4 bg-slate-50 p-3 rounded-lg border border-slate-200 text-[10px] text-slate-500">
+                            <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs text-slate-500">
                                 <p class="leading-relaxed">
-                                    <strong>How payment works:</strong> Pre-authorizations are held. All rentals include boutique checkups, standard alteration fit testing, and dry cleaning. No instant charges until collection in our West Bay boutique showroom.
+                                    <strong class="text-slate-700">How payment works:</strong> Pre-authorizations are held. All rentals include boutique checkups, fit testing, and dry cleaning. No instant charges until collection in our West Bay showroom.
                                 </p>
                             </div>
                         </div>
@@ -390,125 +466,125 @@
         </div>
 
         <!-- 4. MY BOOKINGS VIEW -->
-        <div id="bookingsView" class="view-section py-10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="bg-brand-100 text-brand-600 p-3 rounded-xl shadow-xs">
-                        <i class="fa-solid fa-clipboard-list text-xl"></i>
+        <div id="bookingsView" class="view-section py-12">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="bg-brand-50 border border-brand-100 text-brand-600 p-3.5 rounded-2xl shadow-sm">
+                        <i class="fa-solid fa-clipboard-list text-2xl"></i>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 font-serif">Reserved Event Wardrobes</h2>
-                        <p class="text-slate-500 text-xs">Access real-time reservation statuses, fitting invoices, and pickup schedules.</p>
+                        <h2 class="text-3xl font-bold text-slate-900 font-serif">Reserved Event Wardrobes</h2>
+                        <p class="text-slate-500 text-sm mt-1">Access real-time reservation statuses, fitting invoices, and pickup schedules.</p>
                     </div>
                 </div>
                 
-                <div id="bookingsContainer" class="space-y-4">
+                <div id="bookingsContainer" class="space-y-6">
                     <!-- Javascript injections populate dynamically -->
                 </div>
             </div>
         </div>
 
         <!-- 5. BUSINESS FRAMEWORK VIEW (INFO PAGE) -->
-        <div id="monetizationView" class="view-section py-10">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-10">
-                    <span class="bg-amber-100 text-amber-800 font-extrabold text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider">Operational Framework</span>
-                    <h2 class="text-3xl font-bold text-slate-900 font-serif mt-3">RentStyle Income Ecosystem</h2>
-                    <p class="text-slate-500 text-xs max-w-lg mx-auto mt-2">RentStyle's financial model ensures high-quality fabric hygiene, community affordability, and strategic designer sponsorships.</p>
+        <div id="monetizationView" class="view-section py-12">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <span class="bg-amber-100 text-amber-800 font-extrabold text-[10px] px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">Operational Framework</span>
+                    <h2 class="text-4xl font-bold text-slate-900 font-serif mt-5 mb-4">RentStyle Income Ecosystem</h2>
+                    <p class="text-slate-500 text-sm max-w-2xl mx-auto leading-relaxed">RentStyle's financial model ensures high-quality fabric hygiene, community affordability, and strategic designer sponsorships.</p>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-6 mb-10">
-                    <!-- Block 1: Transactional fee -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4">
-                        <div class="bg-indigo-50 text-brand-600 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-arrow-right-arrow-left text-sm"></i>
+                <div class="grid md:grid-cols-2 gap-8 mb-16">
+                    <!-- Block 1 -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-soft flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-indigo-50 text-brand-600 h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 border border-indigo-100">
+                            <i class="fa-solid fa-arrow-right-arrow-left text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-sm font-serif mb-1">1. Transactional Service Fees</h3>
-                            <p class="text-slate-500 text-xs leading-relaxed">
-                                A clean <strong>5% transactional commission</strong> is computed on standard one-off rental bookings to maintain system platform hosting and showroom logistical operations.
+                            <h3 class="font-bold text-slate-900 text-lg font-serif mb-2">1. Transactional Service Fees</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">
+                                A dynamic transactional commission is computed on bookings (<strong>15% for rentals, 10% for purchases</strong>) to maintain system platform hosting and showroom logistical operations.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Block 2: Monthly subscription -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4">
-                        <div class="bg-amber-50 text-amber-600 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-crown text-sm"></i>
+                    <!-- Block 2 -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-soft flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-amber-50 text-amber-600 h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 border border-amber-100">
+                            <i class="fa-solid fa-crown text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-sm font-serif mb-1">2. Monthly Membership (StylePass)</h3>
-                            <p class="text-slate-500 text-xs leading-relaxed">
-                                Subscription packages like **StylePass Gold** (QAR 15/mo) and **Platinum** (QAR 30/mo) build consistent recurring cash flows while rewarding users with waived transactional commissions, deposit waivers, and 15% to 25% off catalog items.
+                            <h3 class="font-bold text-slate-900 text-lg font-serif mb-2">2. Monthly Membership (StylePass)</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">
+                                Subscription packages like <strong>StylePass Gold</strong> build consistent recurring cash flows while rewarding users with waived commissions and 15% to 25% off catalog items.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Block 3: Protection Fee -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4">
-                        <div class="bg-emerald-50 text-emerald-600 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-shield-blank text-sm"></i>
+                    <!-- Block 3 -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-soft flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-emerald-50 text-emerald-600 h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-100">
+                            <i class="fa-solid fa-shield-blank text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-sm font-serif mb-1">3. Damage Protection Fees</h3>
-                            <p class="text-slate-500 text-xs leading-relaxed">
-                                Optional micro-protection additions starting from **QAR 15 per outfit** cover unexpected fabric accidents. It delivers peace of mind for clients and creates high-margin insurance revenue pools.
+                            <h3 class="font-bold text-slate-900 text-lg font-serif mb-2">3. Damage Protection Fees</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">
+                                Optional micro-protection additions starting from <strong>QAR 15 per outfit</strong> cover unexpected fabric accidents. It delivers peace of mind for clients and creates high-margin insurance revenue pools.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Block 4: Sponsored Collection -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4">
-                        <div class="bg-red-50 text-rose-600 h-10 w-10 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                    <!-- Block 4 -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-soft flex flex-col sm:flex-row gap-5 hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-rose-50 text-rose-600 h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 border border-rose-100">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-sm font-serif mb-1">4. Sponsored Designer Collections</h3>
-                            <p class="text-slate-500 text-xs leading-relaxed">
-                                Elite fashion designers, wedding boutiques, and international couture brands pay advertising premiums to list their collections as **"Sponsored Designers"** for top placement on user grids, promoting premium sales.
+                            <h3 class="font-bold text-slate-900 text-lg font-serif mb-2">4. Sponsored Designer Collections</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">
+                                Elite fashion designers, wedding boutiques, and international brands pay advertising premiums to list their collections as <strong>"Sponsored"</strong> for top placement on user grids.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Showroom Location Information Card -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-brand-600 text-white py-8 px-6 text-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-20 bg-center"></div>
+                <div class="bg-white rounded-[2rem] shadow-soft border border-slate-200 overflow-hidden max-w-4xl mx-auto">
+                    <div class="bg-brand-600 text-white py-12 px-8 text-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&auto=format&fit=crop')] bg-cover opacity-10 bg-center"></div>
                         <div class="relative z-10">
-                            <div class="bg-white/20 h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-                                <i class="fa-solid fa-location-dot text-xl text-amber-300"></i>
+                            <div class="bg-white/10 backdrop-blur-md h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
+                                <i class="fa-solid fa-location-dot text-2xl text-amber-300"></i>
                             </div>
-                            <h4 class="font-serif text-xl font-bold">Doha Boutique Showroom</h4>
-                            <p class="text-xs text-slate-200 mt-1">West Bay Marina Galleria, Level 2, Suite 210, Doha, Qatar</p>
+                            <h4 class="font-serif text-3xl font-bold mb-2">Doha Boutique Showroom</h4>
+                            <p class="text-sm text-slate-300">West Bay Marina Galleria, Level 2, Suite 210, Doha, Qatar</p>
                         </div>
                     </div>
                     
-                    <div class="p-6 grid md:grid-cols-2 gap-6">
+                    <div class="p-8 grid md:grid-cols-2 gap-8 bg-white">
                         <div>
-                            <h3 class="font-bold text-xs text-slate-900 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                                <i class="fa-solid fa-door-open text-brand-600"></i> Showroom Hours
+                            <h3 class="font-bold text-sm text-slate-900 mb-4 flex items-center gap-2.5 uppercase tracking-wider">
+                                <i class="fa-solid fa-door-open text-brand-600 text-lg"></i> Showroom Hours
                             </h3>
-                            <ul class="space-y-2 text-xs text-slate-600">
-                                <li class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex justify-between border-b border-slate-100 pb-2">
                                     <span>Saturday - Thursday</span>
-                                    <span class="font-semibold text-slate-950">10:00 AM - 9:00 PM</span>
+                                    <span class="font-bold text-slate-900">10:00 AM - 9:00 PM</span>
                                 </li>
-                                <li class="flex justify-between pb-1.5">
+                                <li class="flex justify-between pb-1">
                                     <span>Friday (Evening Hours)</span>
-                                    <span class="font-semibold text-slate-950">4:00 PM - 10:00 PM</span>
+                                    <span class="font-bold text-slate-900">4:00 PM - 10:00 PM</span>
                                 </li>
                             </ul>
                         </div>
                         
                         <div>
-                            <h3 class="font-bold text-xs text-slate-900 mb-3 flex items-center gap-2 uppercase tracking-wider">
-                                <i class="fa-solid fa-soap text-emerald-600"></i> Dry-Cleaning Protocol
+                            <h3 class="font-bold text-sm text-slate-900 mb-4 flex items-center gap-2.5 uppercase tracking-wider">
+                                <i class="fa-solid fa-soap text-emerald-600 text-lg"></i> Dry-Cleaning Protocol
                             </h3>
-                            <ul class="space-y-1 text-xs text-slate-500 list-disc pl-5">
+                            <ul class="space-y-2.5 text-sm text-slate-600 list-disc pl-5">
                                 <li>Fully sanitized after every return.</li>
                                 <li>On-site designers ready to support adjustments on pickup.</li>
-                                <li>High-quality standard second-hand inventory is cataloged.</li>
+                                <li>High-quality standard second-hand inventory is meticulously cataloged.</li>
                             </ul>
                         </div>
                     </div>
@@ -519,143 +595,140 @@
     </main>
 
     <!-- COMPREHENSIVE CONFIGURABLE MODAL -->
-    <div id="bookingModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6">
         <!-- Backdrop blur -->
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-md transition-opacity" onclick="closeModal()"></div>
         
         <!-- Modal Panel Container -->
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl relative z-10 flex flex-col md:flex-row overflow-hidden transform scale-95 opacity-0 transition-all duration-300 max-h-[92vh]" id="modalPanel">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-5xl relative z-10 flex flex-col md:flex-row overflow-hidden transform scale-95 opacity-0 transition-all duration-400 ease-out max-h-[95vh]" id="modalPanel">
             
-            <button onclick="closeModal()" class="absolute top-4 right-4 h-9 w-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md transition-all z-20 md:bg-slate-100 md:text-slate-500">
-                <i class="fa-solid fa-xmark"></i>
+            <button onclick="closeModal()" class="absolute top-5 right-5 h-10 w-10 bg-white/90 backdrop-blur hover:bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md transition-all z-20 md:bg-slate-100 md:text-slate-600 md:hover:bg-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
             <!-- Left column: Costume Showcase Image -->
-            <div class="md:w-1/2 bg-slate-900 h-56 md:h-auto relative">
+            <div class="md:w-[45%] bg-slate-900 h-64 md:h-auto relative">
                 <img id="modalImage" src="" alt="Premium Wear" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-6">
-                    <div>
-                        <div id="modalBrandSponsorBlock" class="hidden mb-2">
-                            <span class="bg-amber-400 text-slate-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                                <i class="fa-solid fa-star text-[8px] mr-1"></i> Sponsored Collection
+                <div class="absolute inset-0 bg-gradient-to-t from-[#070d1e]/90 via-[#070d1e]/40 to-transparent flex items-end p-8">
+                    <div class="w-full">
+                        <div id="modalBrandSponsorBlock" class="hidden mb-3">
+                            <span class="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-wider shadow-md inline-flex items-center gap-1.5">
+                                <i class="fa-solid fa-star text-[9px]"></i> Sponsored Collection
                             </span>
                         </div>
-                        <span id="modalOccasion" class="text-xs font-black uppercase tracking-widest text-amber-300">Wedding / Graduation</span>
-                        <h3 id="modalTitle" class="text-2xl font-serif font-bold text-white mb-2">Exclusive Wear</h3>
+                        <span id="modalOccasion" class="text-[10px] font-black uppercase tracking-widest text-amber-400 block mb-1.5">Wedding / Graduation</span>
+                        <h3 id="modalTitle" class="text-3xl font-serif font-bold text-white mb-2 leading-tight">Exclusive Wear</h3>
                     </div>
                 </div>
             </div>
 
             <!-- Right column: Interactive Mode Choice Form -->
-            <div class="md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto">
-                <p id="modalDesc" class="text-slate-600 text-xs leading-relaxed mb-6">
+            <div class="md:w-[55%] p-6 md:p-10 flex flex-col overflow-y-auto bg-white">
+                <p id="modalDesc" class="text-slate-500 text-sm leading-relaxed mb-8">
                     Item description. Suitable for graduations, proms, weddings and parties.
                 </p>
 
                 <!-- Step 1: Mode Selectors -->
-                <div class="mb-5">
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">Choose Your Acquisition Method:</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <!-- Rent Card Option -->
-                        <div onclick="setAcquisitionMode('rent')" id="modeOption-rent" class="border border-slate-200 rounded-xl p-2.5 text-center cursor-pointer hover:border-brand-500 transition-all">
-                            <i class="fa-solid fa-clock-rotate-left text-brand-500 mb-1 text-sm"></i>
-                            <span class="block text-xs font-bold text-slate-900">Rent</span>
-                            <span id="labelRentPrice" class="text-[9px] text-slate-500 font-medium">QAR 0/day</span>
+                <div class="mb-8">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">1. Choose Acquisition Method</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Rent Option -->
+                        <div onclick="setAcquisitionMode('rent')" id="modeOption-rent" class="border-2 border-slate-200 rounded-2xl p-3 sm:p-4 text-center cursor-pointer hover:border-brand-400 transition-all group relative overflow-hidden">
+                            <i class="fa-solid fa-clock-rotate-left text-brand-500 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="block text-sm font-bold text-slate-900 mb-0.5">Rent</span>
+                            <span id="labelRentPrice" class="text-[10px] text-slate-500 font-medium bg-slate-50 px-2 py-0.5 rounded-md inline-block">QAR 0/day</span>
                         </div>
-                        <!-- Borrow Card Option -->
-                        <div onclick="setAcquisitionMode('borrow')" id="modeOption-borrow" class="border border-slate-200 rounded-xl p-2.5 text-center cursor-pointer hover:border-brand-500 transition-all">
-                            <i class="fa-solid fa-users text-amber-600 mb-1 text-sm"></i>
-                            <span class="block text-xs font-bold text-slate-900">Borrow</span>
-                            <span id="labelBorrowPrice" class="text-[9px] text-slate-500 font-medium">QAR 0 deposit</span>
-                        </div>
-                        <!-- Buy Second Hand Option -->
-                        <div onclick="setAcquisitionMode('buy')" id="modeOption-buy" class="border border-slate-200 rounded-xl p-2.5 text-center cursor-pointer hover:border-brand-500 transition-all">
-                            <i class="fa-solid fa-tag text-emerald-600 mb-1 text-sm"></i>
-                            <span class="block text-xs font-bold text-slate-900">Buy Pre-loved</span>
-                            <span id="labelBuyPrice" class="text-[9px] text-slate-500 font-medium">QAR 0.00</span>
+                        <!-- Buy Option -->
+                        <div onclick="setAcquisitionMode('buy')" id="modeOption-buy" class="border-2 border-slate-200 rounded-2xl p-3 sm:p-4 text-center cursor-pointer hover:border-emerald-400 transition-all group">
+                            <i class="fa-solid fa-tag text-emerald-500 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="block text-sm font-bold text-slate-900 mb-0.5">Pre-loved</span>
+                            <span id="labelBuyPrice" class="text-[10px] text-slate-500 font-medium bg-slate-50 px-2 py-0.5 rounded-md inline-block">QAR 0.00</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 2: Date, Quantity, and Protection Settings Form -->
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex-grow">
-                    <form id="bookingForm" class="space-y-3.5">
+                <!-- Step 2: Form -->
+                <div class="bg-[#f8fafc] p-6 rounded-3xl border border-slate-200 flex-grow shadow-inner">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">2. Configure Order Details</label>
+                        <span id="modalStockStatus" class="text-[10px] font-black uppercase tracking-wider text-brand-600 bg-brand-100 px-2 py-1 rounded-md">In Stock: 1</span>
+                    </div>
+                    <form id="bookingForm" class="space-y-5">
                         
                         <!-- RENT/BORROW DATES VIEW -->
-                        <div id="dateInputsContainer" class="grid grid-cols-2 gap-3">
+                        <div id="dateInputsContainer" class="grid sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-semibold text-slate-500 mb-1">Pick-up Date</label>
-                                <input type="date" id="pickupDate" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Pick-up Date</label>
+                                <input type="date" id="pickupDate" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-sm">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-semibold text-slate-500 mb-1">Return Date</label>
-                                <input type="date" id="returnDate" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Return Date</label>
+                                <input type="date" id="returnDate" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-sm">
                             </div>
                         </div>
 
                         <!-- RENT ONLY: Active wear days input -->
                         <div id="rentUsageContainer">
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-[10px] font-semibold text-slate-500">Event Wear Days (Only Billed Days)</label>
-                                <span class="text-[8px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full">
-                                    Transit days are free!
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-xs font-semibold text-slate-600">Event Wear Days (Only Billed Days)</label>
+                                <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200">
+                                    Transit is free!
                                 </span>
                             </div>
-                            <input type="number" id="usageDays" min="1" value="1" class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            <input type="number" id="usageDays" min="1" value="1" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-sm">
                         </div>
                         
                         <!-- Quantity Input -->
                         <div>
-                            <label class="block text-[10px] font-semibold text-slate-500 mb-1">Quantity (Perfect for dance troupes, matching groups)</label>
-                            <input type="number" id="bookingQuantity" min="1" max="50" value="1" required class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Quantity Required</label>
+                            <input type="number" id="bookingQuantity" min="1" max="50" value="1" required class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-4 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-sm">
                         </div>
 
-                        <!-- Monetization Toggle: Protection Fee option selection -->
-                        <div id="protectionOptionContainer" class="bg-white p-3 rounded-lg border border-slate-200">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="garmentProtectionCheckbox" class="h-4 w-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300 cursor-pointer" checked>
-                                <label for="garmentProtectionCheckbox" class="text-xs font-bold text-slate-700 cursor-pointer flex items-center gap-1.5">
-                                    <i class="fa-solid fa-shield-halved text-emerald-600"></i> Add Damage Protection (+QAR 15 / garment)
+                        <!-- Monetization Toggle: Protection Fee -->
+                        <div id="protectionOptionContainer" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm transition-colors hover:border-slate-300">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="garmentProtectionCheckbox" class="h-5 w-5 rounded text-brand-600 focus:ring-brand-500 border-slate-300 cursor-pointer" checked>
+                                <label for="garmentProtectionCheckbox" class="text-sm font-bold text-slate-800 cursor-pointer flex items-center gap-2 select-none">
+                                    <i class="fa-solid fa-shield-halved text-emerald-500 text-lg"></i> Add Damage Protection (+QAR 15)
                                 </label>
                             </div>
-                            <p class="text-[9px] text-slate-400 mt-1 pl-6">Highly recommended! Fully covers standard spills, minor tears, and deep stain extraction.</p>
+                            <p class="text-xs text-slate-500 mt-2 pl-8 leading-relaxed">Highly recommended! Fully covers standard spills, minor tears, and deep stain extraction.</p>
                         </div>
                         
-                        <!-- Real-time Cost Breakdown Area -->
-                        <div class="border-t border-slate-200 pt-3 mt-4 space-y-1.5 text-[11px] text-slate-600">
+                        <!-- Real-time Cost Breakdown -->
+                        <div class="border-t border-slate-200 pt-5 mt-6 space-y-2.5 text-xs text-slate-600">
                             <div id="breakdownDates" class="flex justify-between">
-                                <span class="text-slate-400">Total Holding Window:</span>
-                                <span class="font-medium text-slate-800" id="durationCalc">1 day</span>
+                                <span class="text-slate-500">Total Holding Window:</span>
+                                <span class="font-semibold text-slate-800" id="durationCalc">1 day</span>
                             </div>
                             <div id="breakdownWear" class="flex justify-between">
-                                <span class="text-slate-400">Billed Wear Days:</span>
-                                <span class="font-bold text-emerald-600" id="chargedDaysCalc">1 day</span>
+                                <span class="text-slate-500">Billed Wear Days:</span>
+                                <span class="font-bold text-emerald-600 bg-emerald-50 px-2 rounded" id="chargedDaysCalc">1 day</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-400">Total Outfits:</span>
-                                <span class="font-medium text-slate-800" id="quantityCalc">1 outfit</span>
+                                <span class="text-slate-500">Total Outfits:</span>
+                                <span class="font-semibold text-slate-800" id="quantityCalc">1 outfit</span>
                             </div>
                             <div class="flex justify-between" id="breakdownProtectionRow">
-                                <span class="text-slate-400">Damage Protection Cover:</span>
-                                <span class="font-medium text-slate-800 text-emerald-600" id="protectionCalc">QAR 15.00</span>
+                                <span class="text-slate-500">Damage Protection Cover:</span>
+                                <span class="font-bold text-slate-800" id="protectionCalc">QAR 15.00</span>
                             </div>
-                            <!-- Live updates for transactional fee calculations -->
                             <div class="flex justify-between" id="breakdownServiceRow">
-                                <span class="text-slate-400 flex items-center gap-1">
+                                <span class="text-slate-500 flex items-center gap-1.5">
                                     Transactional Service Fee:
-                                    <span id="serviceFeeNoticeBadge" class="bg-amber-100 text-amber-800 font-bold text-[8px] px-1 py-0.5 rounded-full scale-90">Waived with StylePass</span>
+                                    <span id="serviceFeeNoticeBadge" class="bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 font-bold text-[9px] px-1.5 py-0.5 rounded-sm shadow-sm hidden">Waived (StylePass)</span>
                                 </span>
-                                <span class="font-medium text-slate-800" id="serviceFeeCalc">QAR 0.00</span>
+                                <span class="font-semibold text-slate-800" id="serviceFeeCalc">QAR 0.00</span>
                             </div>
                             
-                            <div class="flex justify-between items-center pt-2.5 border-t border-slate-200 border-dashed">
-                                <span class="text-slate-800 font-bold text-xs">Estimated Price:</span>
-                                <span class="text-lg font-bold text-brand-600" id="totalCalc">QAR 0.00</span>
+                            <div class="flex justify-between items-center pt-4 mt-2 border-t border-slate-200 border-dashed">
+                                <span class="text-slate-900 font-black text-sm uppercase tracking-wider">Est. Price</span>
+                                <span class="text-2xl font-black text-brand-600" id="totalCalc">QAR 0.00</span>
                             </div>
                         </div>
 
-                        <!-- Add to Cart Submission -->
-                        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition-colors shadow-md flex justify-center items-center gap-2 text-xs mt-3">
+                        <!-- Submit Button -->
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 flex justify-center items-center gap-2 text-sm mt-6">
                             <i class="fa-solid fa-cart-plus"></i> Add to Wardrobe Bag
                         </button>
                     </form>
@@ -664,262 +737,91 @@
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-32 opacity-0 transition-all duration-300 z-50">
-        <div class="bg-brand-700 text-white px-5 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-brand-500">
-            <div id="toastIcon" class="bg-amber-400 text-brand-700 rounded-full h-8 w-8 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-check text-sm"></i>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-32 opacity-0 transition-all duration-400 ease-out z-50">
+        <div class="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-slate-700 max-w-sm">
+            <div id="toastIcon" class="bg-emerald-500 text-white rounded-full h-10 w-10 flex items-center justify-center shrink-0 shadow-inner">
+                <i class="fa-solid fa-check"></i>
             </div>
             <div>
-                <h5 class="font-bold text-xs" id="toastTitle">Success!</h5>
-                <p class="text-[10px] text-slate-200 mt-0.5" id="toastMessage">Reservation completed.</p>
+                <h5 class="font-bold text-sm" id="toastTitle">Success!</h5>
+                <p class="text-xs text-slate-300 mt-1 leading-snug" id="toastMessage">Reservation completed.</p>
             </div>
         </div>
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-brand-900 text-slate-400 py-10 mt-auto border-t border-brand-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer class="bg-[#070d1e] text-slate-400 py-12 mt-auto border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div class="col-span-1 md:col-span-2">
-                <div class="flex items-center gap-2 mb-3">
-                    <i class="fa-solid fa-shirt text-amber-400 text-xl"></i>
-                    <span class="font-serif text-xl font-bold text-white tracking-tight">RentStyle</span>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-shirt text-brand-500 text-2xl"></i>
+                    <span class="font-serif text-2xl font-bold text-white tracking-tight">RentStyle</span>
                 </div>
-                <p class="text-xs max-w-sm leading-relaxed text-slate-300">
-                    Doha's elite sustainable multi-channel platform to Rent, Borrow, and Purchase premium pre-loved occasion wear. Built for weddings, proms, graduations, and high-fashion galas.
+                <p class="text-sm max-w-md leading-relaxed text-slate-400">
+                    Doha's elite sustainable multi-channel platform to Rent and Purchase premium pre-loved occasion wear. Built for weddings, proms, graduations, and high-fashion galas.
                 </p>
-                <p class="text-[10px] text-slate-400 mt-4">
+                <p class="text-[11px] text-slate-500 mt-6 font-medium tracking-wide">
                     Licence No: 9482710/QA — Doha Central, Qatar.
                 </p>
             </div>
             <div>
-                <h4 class="text-white font-semibold font-serif mb-3 text-xs uppercase tracking-wider">Monetization Channels</h4>
-                <ul class="space-y-1.5 text-[11px]">
-                    <li><button onclick="switchView('monetizationView')" class="hover:text-amber-400 transition-colors">Transactional Service Rates</button></li>
-                    <li><button onclick="switchView('subscriptionView')" class="hover:text-amber-400 transition-colors">StylePass Membership Plans</button></li>
-                    <li><button onclick="switchView('monetizationView')" class="hover:text-amber-400 transition-colors">Damage Waiver Protection Cover</button></li>
-                    <li><button onclick="switchView('catalogView'); filterGridCategory('Sponsored')" class="hover:text-amber-400 transition-colors">Sponsored Designer Portfolios</button></li>
+                <h4 class="text-white font-bold font-serif mb-4 text-sm uppercase tracking-widest">Monetization Channels</h4>
+                <ul class="space-y-2.5 text-xs text-slate-300">
+                    <li><button onclick="switchView('monetizationView')" class="hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-caret-right text-[10px]"></i> Transactional Rates</button></li>
+                    <li><button onclick="switchView('subscriptionView')" class="hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-caret-right text-[10px]"></i> StylePass Plans</button></li>
+                    <li><button onclick="switchView('monetizationView')" class="hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-caret-right text-[10px]"></i> Damage Protection</button></li>
+                    <li><button onclick="switchView('catalogView'); filterGridCategory('Sponsored')" class="hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-caret-right text-[10px]"></i> Sponsored Portfolios</button></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-semibold font-serif mb-3 text-xs uppercase tracking-wider">Contact & Location</h4>
-                <ul class="space-y-1.5 text-[11px]">
-                    <li><i class="fa-solid fa-envelope w-4 text-amber-400"></i> info@rentstyle.qa</li>
-                    <li><i class="fa-solid fa-phone w-4 text-amber-400"></i> +974 4492 8800</li>
-                    <li><i class="fa-solid fa-map-location w-4 text-amber-400"></i> West Bay Marina Suite 210, Doha</li>
+                <h4 class="text-white font-bold font-serif mb-4 text-sm uppercase tracking-widest">Contact & Location</h4>
+                <ul class="space-y-3 text-xs text-slate-300">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-0.5 text-brand-500"></i> info@rentstyle.qa</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-0.5 text-brand-500"></i> +974 4492 8800</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-map-location mt-0.5 text-brand-500"></i> West Bay Marina Suite 210, Doha, Qatar</li>
                 </ul>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-4 border-t border-white/5 text-center text-[10px] text-slate-500">
-            &copy; 2026 RentStyle Qatar. Complete Premium Event Wear Ecosystem with Flexible Protection and Memberships.
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-slate-800/50 text-center text-xs text-slate-500 font-medium tracking-wide">
+            &copy; 2026 RentStyle Qatar. Complete Premium Event Wear Ecosystem.
         </div>
     </footer>
 
     <script>
-        // Curated Outfits with updated sponsored status, sponsor designers, and simplified pricing models
+        // EXPANDED DATA SET: 24 Premium curated outfits
         const outfits = [
-            { 
-                id: 1, 
-                name: "Indian Lehenga", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 65, 
-                borrowPrice: 20, 
-                buyPrice: 190,
-                description: "Vibrant and elegant crimson red Indian Lehenga with delicate floral hand-embroidery. Suitable for wedding parties, Sangeets, and premium cultural gatherings.", 
-                image: "https://i.ebayimg.com/images/g/JcYAAOSwu2ZnZPE1/s-l1200.jpg", 
-                available: true,
-                sponsored: true,
-                sponsorName: "Sabyasachi Heritage"
-            },
-            { 
-                id: 2, 
-                name: "Midnight Tuxedo Suit", 
-                occasion: "Parties & Formals", 
-                rentPrice: 50, 
-                borrowPrice: 15, 
-                buyPrice: 170,
-                description: "Classic slim-fit midnight blue velvet-trimmed tuxedo. Complete with a satin shawl collar. Absolutely ideal for proms, galas, and luxurious weddings.", 
-                image: "https://cdn2.propercloth.com/pic_tccp/fd1c15cd954f075ec215111817e6185c_size6.jpg", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 3, 
-                name: "Royal Silk Sherwani", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 70, 
-                borrowPrice: 25, 
-                buyPrice: 220,
-                description: "Stunning beige silk Sherwani featuring detailed gold thread work. High-end cultural formal wear ideal for traditional weddings and luxury celebrations.", 
-                image: "https://thehub.in/cdn/shop/files/Royal-Silk-Sherwani-Set.webp?v=1754908872", 
-                available: true,
-                sponsored: true,
-                sponsorName: "Doha Atelier"
-            },
-            { 
-                id: 4, 
-                name: "Graduation Gown & Cap Set", 
-                occasion: "Proms & Graduations", 
-                rentPrice: 30, 
-                borrowPrice: 10, 
-                buyPrice: 90,
-                description: "Premium black matte graduation gown complete with a customizable colored graduation sash and mortarboard cap with tassel.", 
-                image: "https://img.kwcdn.com/product/fancy/b59c41a8-6d3d-4bfa-86a9-69929631f48b.jpg?imageView2/2/w/500/q/60/format/webp", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 5, 
-                name: "Formal Emerald Ballgown", 
-                occasion: "Proms & Graduations", 
-                rentPrice: 75, 
-                borrowPrice: 25, 
-                buyPrice: 230,
-                description: "Deep emerald green satin floor-length evening ballgown with pockets and an open back layout. Outstanding option for formal proms and luxury wedding guests.", 
-                image: "https://www.dollygown.com/cdn/shop/products/32_cba83646-b780-44ee-9988-ca1c31215785.jpg?v=1697612757", 
-                available: true,
-                sponsored: true,
-                sponsorName: "Elie Saab Couture"
-            },
-            { 
-                id: 6, 
-                name: "Cocktail Party Slip Dress", 
-                occasion: "Parties & Formals", 
-                rentPrice: 40, 
-                borrowPrice: 15, 
-                buyPrice: 120,
-                description: "Sophisticated silk slip dress with cowl neck. Minimalist design ideal for cocktail parties, social gatherings, and graduation parties.", 
-                image: "https://www.promgirl.com/cdn/shop/files/Aspen-Sage_1_1200x2000.jpg?v=1762531713", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 7, 
-                name: "Classical Dance Saree", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 45, 
-                borrowPrice: 15, 
-                buyPrice: 130,
-                description: "Traditional vibrant orange-gold Banarasi saree. Pre-pleated for easy wearing during weddings, cultural shows, and gala celebrations.", 
-                image: "https://cpimg.tistatic.com/03218294/b/5/Mohiniattam-Dance-Saree.jpg", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 8, 
-                name: "Kurta Pajama Duo", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 35, 
-                borrowPrice: 10, 
-                buyPrice: 110,
-                description: "Comfortable, premium linen-cotton mix Kurta with matching pajama pants and vest. Highly requested for festive cultural gatherings and family events.", 
-                image: "https://cdn.shopify.com/s/files/1/0579/7930/6151/files/purple_twinning_kurta_pajama_-_MLS_480x480.png?v=1717420840", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 9, 
-                name: "Sequin Prom Dress", 
-                occasion: "Proms & Graduations", 
-                rentPrice: 60, 
-                borrowPrice: 18, 
-                buyPrice: 160,
-                description: "A dazzling, floor-sweeping prom gown embellished with reflective rose-gold sequins. Includes an elegant side slit and double strap back details.", 
-                image: "https://img.veaul.com/catalog/product/o/1/o1cn01ya1hpn2ejbitaovrf__47798723/simg/sparkly-high-end-rose-gold-handmade-beading-sequins-prom-dresses-2023-a-line-princess-scoop-neck-sleeveless-sweep-train-prom-formal-dresses.jpg@600w.jpg", 
-                available: true,
-                sponsored: true,
-                sponsorName: "Sherri Hill Exclusive"
-            },
-            { 
-                id: 10, 
-                name: "Classic Black Suit", 
-                occasion: "Parties & Formals", 
-                rentPrice: 40, 
-                borrowPrice: 12, 
-                buyPrice: 110,
-                description: "Tailored charcoal-black single-breasted suit jacket and matching trousers. Crisp styling designed for formal interviews, graduation presentations, or black-tie occasions.", 
-                image: "https://www.charlestyrwhitt.com/dw/image/v2/AAWJ_PRD/on/demandware.static/-/Sites-ctshirts-master/default/dwb1b6b6ed/hi-res/TAILORING/CT/SUB0506BLK_MODEL_FULL_WEDDING.jpg?sw=860&sh=1080&sm=fit&q=50", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 11, 
-                name: "Anarkali Gown", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 55, 
-                borrowPrice: 15, 
-                buyPrice: 140,
-                description: "Majestic floor-length floral Anarkali suit with heavy zari embroidery borders. Comes complete with a sheer georgette dupatta drape.", 
-                image: "https://subhvastra.in/cdn/shop/files/WhatsAppImage2024-03-11at1.42.44PM_700x.jpg?v=1713958751", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 12, 
-                name: "Velvet Evening Gown", 
-                occasion: "Parties & Formals", 
-                rentPrice: 65, 
-                borrowPrice: 20, 
-                buyPrice: 180,
-                description: "Royal burgundy heavyweight velvet formal gown. Offers an elegant off-the-shoulder wrap neckline and structured support, ideal for cold-weather parties.", 
-                image: "https://i.ebayimg.com/images/g/EwkAAOSwxyNneNI~/s-l400.jpg", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 13, 
-                name: "Organza Lehenga", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 58, 
-                borrowPrice: 18, 
-                buyPrice: 165,
-                description: "Lightweight and airy pastel pink organza lehenga set featuring delicate hand-painted floral prints. Perfect for outdoor daytime wedding events.", 
-                image: "https://armadio.in/wp-content/uploads/2021/06/Patine-Organza-Lehenga-Set-Featured-Image.png", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 14, 
-                name: "Linen Summer Blazer", 
-                occasion: "Parties & Formals", 
-                rentPrice: 30, 
-                borrowPrice: 10, 
-                buyPrice: 85,
-                description: "Soft unstructured beige linen blazer. Great for smart-casual outdoor parties, graduation gatherings, and warm-weather formals.", 
-                image: "https://images.unsplash.com/photo-1593032465175-481ac7f401a0?q=80&w=600&auto=format&fit=crop", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 15, 
-                name: "Silk Party Jumpsuit", 
-                occasion: "Parties & Formals", 
-                rentPrice: 35, 
-                borrowPrice: 10, 
-                buyPrice: 95,
-                description: "Chic halter-neck silk jumpsuit in terracotta orange. Modern silhouette offering effortless elegance for parties, cocktails, or social galas.", 
-                image: "https://enme.me/cdn/shop/files/DSF0108-Edit.jpg?v=1768404585&width=1024", 
-                available: true,
-                sponsored: false
-            },
-            { 
-                id: 16, 
-                name: "Embroidered Kurti", 
-                occasion: "Weddings & Cultural", 
-                rentPrice: 25, 
-                borrowPrice: 8, 
-                buyPrice: 70,
-                description: "Clean cotton-silk navy blue Kurti with refined mirror embroidery on the neckline. Lightweight style perfect for cultural festivals and school group assemblies.", 
-                image: "https://www.anantexports.in/cdn/shop/files/IMG_20260131_192107_11_11zon.jpg?v=1774847130&width=1500", 
-                available: true,
-                sponsored: false
-            }
+            { id: 1, name: "Indian Lehenga", occasion: "Weddings & Cultural", rentPrice: 65, borrowPrice: 20, buyPrice: 190, stock: 3, description: "Vibrant and elegant crimson red Indian Lehenga with delicate floral hand-embroidery. Suitable for wedding parties, Sangeets, and premium cultural gatherings.", image: "https://i.ebayimg.com/images/g/JcYAAOSwu2ZnZPE1/s-l1200.jpg", available: true, sponsored: true, sponsorName: "Sabyasachi Heritage" },
+            { id: 2, name: "Midnight Tuxedo Suit", occasion: "Parties & Formals", rentPrice: 50, borrowPrice: 15, buyPrice: 170, stock: 5, description: "Classic slim-fit midnight blue velvet-trimmed tuxedo. Complete with a satin shawl collar. Absolutely ideal for proms, galas, and luxurious weddings.", image: "https://cdn2.propercloth.com/pic_tccp/fd1c15cd954f075ec215111817e6185c_size6.jpg", available: true, sponsored: false },
+            { id: 3, name: "Royal Silk Sherwani", occasion: "Weddings & Cultural", rentPrice: 70, borrowPrice: 25, buyPrice: 220, stock: 2, description: "Stunning beige silk Sherwani featuring detailed gold thread work. High-end cultural formal wear ideal for traditional weddings and luxury celebrations.", image: "https://thehub.in/cdn/shop/files/Royal-Silk-Sherwani-Set.webp?v=1754908872", available: true, sponsored: true, sponsorName: "Doha Atelier" },
+            { id: 4, name: "Graduation Gown & Cap Set", occasion: "Proms & Graduations", rentPrice: 30, borrowPrice: 10, buyPrice: 90, stock: 50, description: "Premium black matte graduation gown complete with a customizable colored graduation sash and mortarboard cap with tassel.", image: "https://img.kwcdn.com/product/fancy/b59c41a8-6d3d-4bfa-86a9-69929631f48b.jpg?imageView2/2/w/500/q/60/format/webp", available: true, sponsored: false },
+            { id: 5, name: "Formal Emerald Ballgown", occasion: "Proms & Graduations", rentPrice: 75, borrowPrice: 25, buyPrice: 230, stock: 1, description: "Deep emerald green satin floor-length evening ballgown with pockets and an open back layout. Outstanding option for formal proms and luxury wedding guests.", image: "https://www.dollygown.com/cdn/shop/products/32_cba83646-b780-44ee-9988-ca1c31215785.jpg?v=1697612757", available: true, sponsored: true, sponsorName: "Elie Saab Couture" },
+            { id: 6, name: "Cocktail Party Slip Dress", occasion: "Parties & Formals", rentPrice: 40, borrowPrice: 15, buyPrice: 120, stock: 3, description: "Sophisticated silk slip dress with cowl neck. Minimalist design ideal for cocktail parties, social gatherings, and graduation parties.", image: "https://www.promgirl.com/cdn/shop/files/Aspen-Sage_1_1200x2000.jpg?v=1762531713", available: true, sponsored: false },
+            { id: 7, name: "Classical Dance Saree", occasion: "Weddings & Cultural", rentPrice: 45, borrowPrice: 15, buyPrice: 130, stock: 4, description: "Traditional vibrant orange-gold Banarasi saree. Pre-pleated for easy wearing during weddings, cultural shows, and gala celebrations.", image: "https://cpimg.tistatic.com/03218294/b/5/Mohiniattam-Dance-Saree.jpg", available: true, sponsored: false },
+            { id: 8, name: "Kurta Pajama Duo", occasion: "Weddings & Cultural", rentPrice: 35, borrowPrice: 10, buyPrice: 110, stock: 8, description: "Comfortable, premium linen-cotton mix Kurta with matching pajama pants and vest. Highly requested for festive cultural gatherings and family events.", image: "https://cdn.shopify.com/s/files/1/0579/7930/6151/files/purple_twinning_kurta_pajama_-_MLS_480x480.png?v=1717420840", available: true, sponsored: false },
+            { id: 9, name: "Sequin Prom Dress", occasion: "Proms & Graduations", rentPrice: 60, borrowPrice: 18, buyPrice: 160, stock: 2, description: "A dazzling, floor-sweeping prom gown embellished with reflective rose-gold sequins. Includes an elegant side slit and double strap back details.", image: "https://img.veaul.com/catalog/product/o/1/o1cn01ya1hpn2ejbitaovrf__47798723/simg/sparkly-high-end-rose-gold-handmade-beading-sequins-prom-dresses-2023-a-line-princess-scoop-neck-sleeveless-sweep-train-prom-formal-dresses.jpg@600w.jpg", available: true, sponsored: true, sponsorName: "Sherri Hill Exclusive" },
+            { id: 10, name: "Classic Black Suit", occasion: "Parties & Formals", rentPrice: 40, borrowPrice: 12, buyPrice: 110, stock: 12, description: "Tailored charcoal-black single-breasted suit jacket and matching trousers. Crisp styling designed for formal interviews, graduation presentations, or black-tie occasions.", image: "https://www.charlestyrwhitt.com/dw/image/v2/AAWJ_PRD/on/demandware.static/-/Sites-ctshirts-master/default/dwb1b6b6ed/hi-res/TAILORING/CT/SUB0506BLK_MODEL_FULL_WEDDING.jpg?sw=860&sh=1080&sm=fit&q=50", available: true, sponsored: false },
+            { id: 11, name: "Anarkali Gown", occasion: "Weddings & Cultural", rentPrice: 55, borrowPrice: 15, buyPrice: 140, stock: 2, description: "Majestic floor-length floral Anarkali suit with heavy zari embroidery borders. Comes complete with a sheer georgette dupatta drape.", image: "https://subhvastra.in/cdn/shop/files/WhatsAppImage2024-03-11at1.42.44PM_700x.jpg?v=1713958751", available: true, sponsored: false },
+            { id: 12, name: "Velvet Evening Gown", occasion: "Parties & Formals", rentPrice: 65, borrowPrice: 20, buyPrice: 180, stock: 1, description: "Royal burgundy heavyweight velvet formal gown. Offers an elegant off-the-shoulder wrap neckline and structured support, ideal for cold-weather parties.", image: "https://i.ebayimg.com/images/g/EwkAAOSwxyNneNI~/s-l400.jpg", available: true, sponsored: false },
+            { id: 13, name: "Organza Lehenga", occasion: "Weddings & Cultural", rentPrice: 58, borrowPrice: 18, buyPrice: 165, stock: 3, description: "Lightweight and airy pastel pink organza lehenga set featuring delicate hand-painted floral prints. Perfect for outdoor daytime wedding events.", image: "https://armadio.in/wp-content/uploads/2021/06/Patine-Organza-Lehenga-Set-Featured-Image.png", available: true, sponsored: false },
+            { id: 14, name: "Linen Summer Blazer", occasion: "Parties & Formals", rentPrice: 30, borrowPrice: 10, buyPrice: 85, stock: 6, description: "Soft unstructured beige linen blazer. Great for smart-casual outdoor parties, graduation gatherings, and warm-weather formals.", image: "https://images.unsplash.com/photo-1593032465175-481ac7f401a0?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false },
+            { id: 15, name: "Silk Party Jumpsuit", occasion: "Parties & Formals", rentPrice: 35, borrowPrice: 10, buyPrice: 95, stock: 4, description: "Chic halter-neck silk jumpsuit in terracotta orange. Modern silhouette offering effortless elegance for parties, cocktails, or social galas.", image: "https://enme.me/cdn/shop/files/DSF0108-Edit.jpg?v=1768404585&width=1024", available: true, sponsored: false },
+            { id: 16, name: "Embroidered Kurti", occasion: "Weddings & Cultural", rentPrice: 25, borrowPrice: 8, buyPrice: 70, stock: 5, description: "Clean cotton-silk navy blue Kurti with refined mirror embroidery on the neckline. Lightweight style perfect for cultural festivals and school group assemblies.", image: "https://www.anantexports.in/cdn/shop/files/IMG_20260131_192107_11_11zon.jpg?v=1774847130&width=1500", available: true, sponsored: false },
+            { id: 17, name: "Royal Qatari Bisht", occasion: "Weddings & Cultural", rentPrice: 85, buyPrice: 280, stock: 2, description: "Exquisite hand-woven black Bisht with pure zari gold embroidery along the edges. Worn by grooms and dignitaries for the ultimate prestige.", image: "https://images.unsplash.com/photo-1578357078586-491adf1aa5ba?q=80&w=600&auto=format&fit=crop", available: true, sponsored: true, sponsorName: "Al-Malaki Tailors" },
+            { id: 18, name: "Crystal Pearl Abaya", occasion: "Weddings & Cultural", rentPrice: 60, buyPrice: 195, stock: 7, description: "Luxurious flowing crepe Abaya heavily embellished with Swarovski crystals and pearls along the sleeves. Perfect for wedding guests.", image: "https://images.unsplash.com/photo-1627055310619-75f850a5857d?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false },
+            { id: 19, name: "Champagne Slit Gown", occasion: "Proms & Graduations", rentPrice: 80, buyPrice: 250, stock: 1, description: "A breathtaking champagne-toned silk gown featuring a draped bodice and an extreme thigh-high slit. High fashion editorial design.", image: "https://images.unsplash.com/photo-1568251188392-ae32f898cb3b?q=80&w=600&auto=format&fit=crop", available: true, sponsored: true, sponsorName: "Vogue Doha" },
+            { id: 20, name: "Burgundy Velvet Tux", occasion: "Parties & Formals", rentPrice: 55, buyPrice: 185, stock: 3, description: "A sharp, tailored burgundy velvet tuxedo jacket paired with slim black trousers. Makes a strong, sophisticated statement at any winter gala.", image: "https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false },
+            { id: 21, name: "Pastel Floral Midi", occasion: "Parties & Formals", rentPrice: 38, buyPrice: 110, stock: 4, description: "A charming pastel watercolor floral midi dress with puff sleeves. Ideal for garden parties, high teas, and daytime engagements.", image: "https://images.unsplash.com/photo-1572804013309-82a89148560f?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false },
+            { id: 22, name: "Designer Tweed Set", occasion: "Parties & Formals", rentPrice: 70, buyPrice: 240, stock: 1, description: "Classic Parisian-style black and white tweed two-piece matching skirt and cropped jacket set. Incredible luxury styling.", image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=600&auto=format&fit=crop", available: true, sponsored: true, sponsorName: "Chic Avenue" },
+            { id: 23, name: "Rose Gold Sequin Mini", occasion: "Parties & Formals", rentPrice: 45, buyPrice: 135, stock: 5, description: "A stunning, form-fitting rose gold sequined mini dress with long sleeves. Designed to catch every light on the dance floor.", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false },
+            { id: 24, name: "Boys Navy Pageboy Suit", occasion: "Weddings & Cultural", rentPrice: 25, buyPrice: 85, stock: 6, description: "Adorable 4-piece boys navy blue suit set including trousers, vest, shirt, and a matching bow tie. Perfect for young ring bearers.", image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=80&w=600&auto=format&fit=crop", available: true, sponsored: false }
         ];
 
         // Dynamic Monetization State Variables
         let currentSelectedOutfit = null;
-        let selectedAcquisitionMode = 'rent'; // 'rent', 'borrow', 'buy'
-        let currentCategoryFilter = 'All'; // 'All', 'Sponsored', 'Weddings & Cultural', etc.
-        let userSubscriptionTier = 'free'; // 'free', 'gold', 'platinum'
+        let selectedAcquisitionMode = 'rent'; 
+        let currentCategoryFilter = 'All'; 
+        let userSubscriptionTier = 'free'; 
         let cart = [];
         let bookings = [];
 
@@ -934,14 +836,14 @@
             document.getElementById(viewId).classList.add('active-view');
             
             document.querySelectorAll('.nav-link').forEach(el => {
-                el.classList.remove('text-brand-600', 'border-brand-600', 'font-semibold');
-                el.classList.add('text-slate-500', 'border-transparent', 'font-medium');
+                el.classList.remove('text-brand-600', 'font-semibold', 'after:h-0.5');
+                el.classList.add('text-slate-500', 'font-medium', 'after:h-0');
             });
             
             const activeLink = document.getElementById('nav-' + viewId);
             if(activeLink) {
-                activeLink.classList.remove('text-slate-500', 'border-transparent', 'font-medium');
-                activeLink.classList.add('text-brand-600', 'border-brand-600', 'font-semibold');
+                activeLink.classList.remove('text-slate-500', 'font-medium', 'after:h-0');
+                activeLink.classList.add('text-brand-600', 'font-semibold', 'after:h-0.5');
             }
 
             if(viewId === 'cartView') renderCart();
@@ -955,7 +857,7 @@
             
             // Toggle active visual class of category buttons
             document.querySelectorAll('.cat-filter-btn').forEach(btn => {
-                btn.className = "cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all";
+                btn.className = "cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-300 transform hover:scale-105";
             });
 
             const mapper = {
@@ -970,7 +872,7 @@
             if (activeBtnId) {
                 const btn = document.getElementById(activeBtnId);
                 if (btn) {
-                    btn.className = "cat-filter-btn px-4 py-2 text-xs font-semibold rounded-xl bg-brand-600 text-white shadow-sm transition-all";
+                    btn.className = "cat-filter-btn px-5 py-2.5 text-xs font-bold rounded-full bg-slate-900 text-white shadow-md transition-all duration-300 transform hover:scale-105";
                 }
             }
 
@@ -979,26 +881,14 @@
 
         // Calculation Helpers for Monetization
         function getModifiedRentPrice(originalPrice) {
-            if (userSubscriptionTier === 'gold') {
-                return Math.floor(originalPrice * 0.85); // 15% Off
-            } else if (userSubscriptionTier === 'platinum') {
-                return Math.floor(originalPrice * 0.75); // 25% Off
-            }
+            if (userSubscriptionTier === 'gold') return Math.floor(originalPrice * 0.85); 
+            if (userSubscriptionTier === 'platinum') return Math.floor(originalPrice * 0.75); 
             return originalPrice;
         }
 
-        function getModifiedBorrowPrice(originalPrice) {
-            if (userSubscriptionTier === 'platinum') {
-                return 0; // Free Borrowing deposits
-            }
-            return originalPrice;
-        }
-
-        function getTransactionalFeeRate() {
-            if (userSubscriptionTier === 'gold' || userSubscriptionTier === 'platinum') {
-                return 0.0; // Waived completely!
-            }
-            return 0.05; // 5% flat transaction fee for guest users
+        function getTransactionalFeeRate(mode) {
+            if (userSubscriptionTier === 'gold' || userSubscriptionTier === 'platinum') return 0.0; 
+            return mode === 'rent' ? 0.15 : 0.10; 
         }
 
         function renderOutfits(filterText = "", occasion = "All") {
@@ -1022,64 +912,67 @@
 
             if(filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full py-16 text-center text-slate-500 bg-white rounded-2xl border border-dashed border-slate-300">
-                        <i class="fa-solid fa-face-frown text-3xl mb-3 text-slate-300"></i>
-                        <p class="font-serif text-lg font-bold">No garments match current query</p>
-                        <p class="text-xs text-slate-400 mt-1">Try toggling another category filter or resetting words.</p>
+                    <div class="col-span-full py-20 text-center text-slate-500 bg-white rounded-3xl border border-dashed border-slate-300 shadow-sm fade-in-up">
+                        <div class="bg-slate-100 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-face-frown text-3xl text-slate-400"></i>
+                        </div>
+                        <p class="font-serif text-2xl font-bold text-slate-800">No garments match query</p>
+                        <p class="text-sm text-slate-400 mt-2">Try toggling another category filter or resetting your search words.</p>
                     </div>`;
                 return;
             }
 
-            filtered.forEach(outfit => {
+            filtered.forEach((outfit, index) => {
                 const card = document.createElement('div');
                 const isSponsored = outfit.sponsored === true;
                 
-                // Extra premium styling for sponsored items
-                card.className = `bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border ${isSponsored ? 'border-amber-400 gold-border-glow' : 'border-slate-100'} flex flex-col h-full group cursor-pointer relative`;
+                // Add staggered animation delay based on index
+                const delay = (index % 8) * 0.05; 
+                
+                card.className = `bg-white rounded-[2rem] overflow-hidden shadow-soft hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border ${isSponsored ? 'border-amber-300 gold-border-glow' : 'border-slate-100'} flex flex-col h-full group cursor-pointer relative fade-in-up`;
+                card.style.animationDelay = `${delay}s`;
                 card.onclick = () => openModal(outfit);
 
-                // Monetization Element: Badge indicating sponsored premium listings
                 let sponsoredBadge = '';
                 if (isSponsored) {
                     sponsoredBadge = `
-                        <div class="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-[9px] font-extrabold px-3 py-1.5 rounded-full shadow-md z-10 flex items-center gap-1">
-                            <i class="fa-solid fa-star text-[8px]"></i>
+                        <div class="absolute top-4 right-4 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[9px] font-black px-3 py-1.5 rounded-full shadow-lg z-20 flex items-center gap-1.5 transform group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-star text-[9px]"></i>
                             <span>${outfit.sponsorName || 'Sponsored'}</span>
                         </div>
                     `;
                 }
 
-                // Calculate discounted display prices dynamically
                 const displayRentPrice = getModifiedRentPrice(outfit.rentPrice);
-                const displayBorrowPrice = getModifiedBorrowPrice(outfit.borrowPrice);
 
                 card.innerHTML = `
                     ${sponsoredBadge}
-                    <div class="relative h-72 overflow-hidden bg-slate-100">
-                        <img src="${outfit.image}" alt="${outfit.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-3 left-3 bg-brand-700/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-md backdrop-blur">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-slate-100">
+                        <img src="${outfit.image}" alt="${outfit.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute top-4 left-4 bg-white/90 text-slate-900 text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm backdrop-blur-sm z-10">
                             ${outfit.occasion}
                         </div>
+                        <div class="absolute top-4 right-4 bg-slate-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm backdrop-blur-sm z-10 flex items-center gap-1.5">
+                            <i class="fa-solid fa-layer-group"></i> Stock: ${outfit.stock}
+                        </div>
                     </div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-base font-extrabold text-slate-900 mb-2 leading-snug font-serif group-hover:text-brand-600 transition-colors flex items-center gap-1">
+                    <div class="p-6 flex flex-col flex-grow bg-white relative z-10">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 leading-snug font-serif group-hover:text-brand-600 transition-colors">
                             ${outfit.name}
                         </h3>
-                        <p class="text-slate-500 text-xs line-clamp-2 mb-4 flex-grow">${outfit.description}</p>
+                        <p class="text-slate-500 text-xs line-clamp-2 mb-6 flex-grow leading-relaxed">${outfit.description}</p>
                         
-                        <div class="border-t border-slate-100 pt-3.5 mt-auto">
-                            <div class="grid grid-cols-3 gap-1 text-center bg-slate-50 p-2.5 rounded-xl text-[10px] border border-slate-100">
-                                <div class="border-r border-slate-200">
-                                    <span class="block font-semibold text-slate-400 uppercase tracking-widest text-[7px]">Rent</span>
-                                    <span class="font-bold text-brand-600">QAR ${displayRentPrice}/d</span>
+                        <div class="pt-2 mt-auto">
+                            <div class="flex items-center justify-between bg-slate-50 p-3.5 rounded-2xl border border-slate-100 group-hover:border-brand-100 group-hover:bg-brand-50 transition-colors">
+                                <div class="flex flex-col">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Rent</span>
+                                    <span class="font-black text-brand-600 text-sm">QAR ${displayRentPrice}</span>
                                 </div>
-                                <div class="border-r border-slate-200">
-                                    <span class="block font-semibold text-slate-400 uppercase tracking-widest text-[7px]">Borrow</span>
-                                    <span class="font-bold text-amber-700">${displayBorrowPrice === 0 ? 'FREE' : 'QAR ' + displayBorrowPrice}</span>
-                                </div>
-                                <div>
-                                    <span class="block font-semibold text-slate-400 uppercase tracking-widest text-[7px]">Pre-Loved</span>
-                                    <span class="font-bold text-emerald-600">QAR ${outfit.buyPrice}</span>
+                                <div class="h-6 w-px bg-slate-200"></div>
+                                <div class="flex flex-col text-right">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Buy</span>
+                                    <span class="font-bold text-emerald-600 text-sm">QAR ${outfit.buyPrice}</span>
                                 </div>
                             </div>
                         </div>
@@ -1089,13 +982,11 @@
             });
         }
 
-        // Hook searching variables
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', () => {
             renderOutfits(searchInput.value, currentCategoryFilter);
         });
 
-        // Date control thresholds
         const today = new Date().toISOString().split('T')[0];
         const pickupInput = document.getElementById('pickupDate');
         const returnInput = document.getElementById('returnDate');
@@ -1111,23 +1002,19 @@
             document.getElementById('modalOccasion').textContent = outfit.occasion;
             document.getElementById('modalTitle').textContent = outfit.name;
             document.getElementById('modalDesc').textContent = outfit.description;
+            document.getElementById('modalStockStatus').textContent = `In Stock: ${outfit.stock}`;
             
-            // Toggle sponsored block layout on modal details
             if (outfit.sponsored) {
                 document.getElementById('modalBrandSponsorBlock').classList.remove('hidden');
             } else {
                 document.getElementById('modalBrandSponsorBlock').classList.add('hidden');
             }
 
-            // Populate exact modified dynamic prices on option tabs
             const modifiedRent = getModifiedRentPrice(outfit.rentPrice);
-            const modifiedBorrow = getModifiedBorrowPrice(outfit.borrowPrice);
 
             document.getElementById('labelRentPrice').textContent = `QAR ${modifiedRent}/day`;
-            document.getElementById('labelBorrowPrice').textContent = modifiedBorrow === 0 ? 'QAR 0 deposit' : `QAR ${modifiedBorrow} deposit`;
             document.getElementById('labelBuyPrice').textContent = `QAR ${outfit.buyPrice}`;
             
-            // Standard default times
             const plusTwoDays = new Date();
             plusTwoDays.setDate(plusTwoDays.getDate() + 2);
             
@@ -1135,10 +1022,11 @@
             returnInput.value = plusTwoDays.toISOString().split('T')[0];
             
             usageInput.value = 1;
-            document.getElementById('bookingQuantity').value = 1;
+            const qtyInput = document.getElementById('bookingQuantity');
+            qtyInput.value = 1;
+            qtyInput.max = outfit.stock;
             document.getElementById('garmentProtectionCheckbox').checked = true;
             
-            // Set default tab selection to Rent
             setAcquisitionMode('rent');
             
             const modal = document.getElementById('bookingModal');
@@ -1170,17 +1058,17 @@
         function setAcquisitionMode(mode) {
             selectedAcquisitionMode = mode;
             
-            const modes = ['rent', 'borrow', 'buy'];
+            const modes = ['rent', 'buy'];
             modes.forEach(m => {
                 const opt = document.getElementById(`modeOption-${m}`);
                 if (m === mode) {
-                    opt.className = "border-2 border-brand-500 rounded-xl p-2.5 text-center cursor-pointer bg-brand-50 shadow-sm transition-all";
+                    if(mode === 'rent') opt.className = "border-2 border-brand-500 rounded-2xl p-3 sm:p-4 text-center cursor-pointer bg-brand-50 shadow-sm transition-all group relative overflow-hidden";
+                    if(mode === 'buy') opt.className = "border-2 border-emerald-500 rounded-2xl p-3 sm:p-4 text-center cursor-pointer bg-emerald-50 shadow-sm transition-all group relative overflow-hidden";
                 } else {
-                    opt.className = "border border-slate-200 rounded-xl p-2.5 text-center cursor-pointer hover:border-slate-300 bg-white transition-all";
+                    opt.className = "border-2 border-slate-200 rounded-2xl p-3 sm:p-4 text-center cursor-pointer hover:border-slate-300 bg-white transition-all group";
                 }
             });
 
-            // Toggle visibility of input layouts based on mode configuration
             const dateSection = document.getElementById('dateInputsContainer');
             const usageSection = document.getElementById('rentUsageContainer');
             const protectionSection = document.getElementById('protectionOptionContainer');
@@ -1200,20 +1088,10 @@
                 breakService.style.display = 'flex';
                 pickupInput.required = true;
                 returnInput.required = true;
-            } else if (mode === 'borrow') {
-                dateSection.style.display = 'grid';
-                usageSection.style.display = 'none';
-                protectionSection.style.display = 'block';
-                breakDates.style.display = 'flex';
-                breakWear.style.display = 'none';
-                breakProtection.style.display = 'flex';
-                breakService.style.display = 'flex';
-                pickupInput.required = true;
-                returnInput.required = true;
-            } else { // Buy pre-loved outright
+            } else { 
                 dateSection.style.display = 'none';
                 usageSection.style.display = 'none';
-                protectionSection.style.display = 'none'; // No protection waivers on permanent purchases
+                protectionSection.style.display = 'none'; 
                 breakDates.style.display = 'none';
                 breakWear.style.display = 'none';
                 breakProtection.style.display = 'none';
@@ -1230,30 +1108,32 @@
 
             const pickupVal = pickupInput.value;
             const dropoffVal = returnInput.value;
-            const qty = parseInt(document.getElementById('bookingQuantity').value) || 1;
+            let qty = parseInt(document.getElementById('bookingQuantity').value) || 1;
+            
+            if (qty > currentSelectedOutfit.stock) {
+                qty = currentSelectedOutfit.stock;
+                document.getElementById('bookingQuantity').value = qty;
+            }
+
             const wantsProtection = document.getElementById('garmentProtectionCheckbox').checked && (selectedAcquisitionMode !== 'buy');
 
             let itemSubtotal = 0;
             let totalHoldingDays = 1;
             let usageDaysVal = 1;
 
-            if (selectedAcquisitionMode === 'rent' || selectedAcquisitionMode === 'borrow') {
+            if (selectedAcquisitionMode === 'rent') {
                 if (pickupVal && dropoffVal) {
                     const start = new Date(pickupVal);
                     const end = new Date(dropoffVal);
                     
-                    if (end < start) {
-                        returnInput.value = pickupInput.value;
-                    }
+                    if (end < start) returnInput.value = pickupInput.value;
                     
                     const timeDiff = Math.abs(end - start);
                     totalHoldingDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
                 }
             }
 
-            // Standard prices factored by subscription status
             const activeRentUnit = getModifiedRentPrice(currentSelectedOutfit.rentPrice);
-            const activeBorrowUnit = getModifiedBorrowPrice(currentSelectedOutfit.borrowPrice);
 
             if (selectedAcquisitionMode === 'rent') {
                 usageInput.max = totalHoldingDays;
@@ -1268,46 +1148,39 @@
                 }
 
                 itemSubtotal = activeRentUnit * usageDaysVal * qty;
-            } else if (selectedAcquisitionMode === 'borrow') {
-                itemSubtotal = activeBorrowUnit * qty;
             } else {
                 itemSubtotal = currentSelectedOutfit.buyPrice * qty;
             }
 
-            // Compute protection insurance fee dynamically
             let protectionFee = wantsProtection ? (STANDARD_PROTECTION_UNIT_COST * qty) : 0;
             
-            // Gold & Platinum memberships cover standard protection fees or halve them
             if (userSubscriptionTier === 'platinum' && wantsProtection) {
-                protectionFee = 0; // Free coverage for Platinum
+                protectionFee = 0; 
             } else if (userSubscriptionTier === 'gold' && wantsProtection) {
-                protectionFee = Math.floor(protectionFee * 0.5); // 50% off
+                protectionFee = Math.floor(protectionFee * 0.5); 
             }
 
-            // Compute transactional platform commission dynamically
-            const transactionFeeRate = getTransactionalFeeRate();
+            const transactionFeeRate = getTransactionalFeeRate(selectedAcquisitionMode);
             const serviceFee = Math.floor(itemSubtotal * transactionFeeRate);
 
             const totalSum = itemSubtotal + protectionFee + serviceFee;
 
-            // Update modal text fields
             document.getElementById('durationCalc').textContent = `${totalHoldingDays} day${totalHoldingDays > 1 ? 's' : ''}`;
             document.getElementById('chargedDaysCalc').textContent = `${usageDaysVal} active day${usageDaysVal > 1 ? 's' : ''}`;
             document.getElementById('quantityCalc').textContent = `${qty} outfit${qty > 1 ? 's' : ''}`;
             
-            // Protection cover calculations
             document.getElementById('protectionCalc').textContent = wantsProtection 
                 ? (userSubscriptionTier === 'platinum' ? 'FREE (Platinum)' : `QAR ${protectionFee.toFixed(2)}`) 
                 : 'QAR 0.00';
             
-            // Transaction fee elements text
             const noticeBadge = document.getElementById('serviceFeeNoticeBadge');
             if (userSubscriptionTier === 'gold' || userSubscriptionTier === 'platinum') {
-                noticeBadge.style.display = 'inline-block';
-                noticeBadge.textContent = "Waived with StylePass";
+                noticeBadge.classList.remove('hidden');
+                noticeBadge.classList.add('inline-block');
                 document.getElementById('serviceFeeCalc').textContent = "FREE";
             } else {
-                noticeBadge.style.display = 'none';
+                noticeBadge.classList.add('hidden');
+                noticeBadge.classList.remove('inline-block');
                 document.getElementById('serviceFeeCalc').textContent = `QAR ${serviceFee.toFixed(2)}`;
             }
 
@@ -1327,7 +1200,9 @@
             e.preventDefault();
             if(!currentSelectedOutfit) return;
 
-            const qty = parseInt(document.getElementById('bookingQuantity').value);
+            let qty = parseInt(document.getElementById('bookingQuantity').value);
+            if (qty > currentSelectedOutfit.stock) qty = currentSelectedOutfit.stock;
+
             const wantsProtection = document.getElementById('garmentProtectionCheckbox').checked && (selectedAcquisitionMode !== 'buy');
 
             const pickupVal = pickupInput.value;
@@ -1336,7 +1211,7 @@
             let holdingDays = 1;
             let usageDays = 1;
 
-            if (selectedAcquisitionMode === 'rent' || selectedAcquisitionMode === 'borrow') {
+            if (selectedAcquisitionMode === 'rent') {
                 const start = new Date(pickupVal);
                 const end = new Date(dropoffVal);
                 const diffTime = Math.abs(end - start);
@@ -1344,19 +1219,15 @@
             }
 
             const activeRentUnit = getModifiedRentPrice(currentSelectedOutfit.rentPrice);
-            const activeBorrowUnit = getModifiedBorrowPrice(currentSelectedOutfit.borrowPrice);
 
             let computedItemSubtotal = 0;
             if (selectedAcquisitionMode === 'rent') {
                 usageDays = parseInt(usageInput.value);
                 computedItemSubtotal = activeRentUnit * usageDays * qty;
-            } else if (selectedAcquisitionMode === 'borrow') {
-                computedItemSubtotal = activeBorrowUnit * qty;
             } else {
                 computedItemSubtotal = currentSelectedOutfit.buyPrice * qty;
             }
 
-            // Monetization calculations applied to individual item profiles
             let itemProtectionCost = wantsProtection ? (STANDARD_PROTECTION_UNIT_COST * qty) : 0;
             if (userSubscriptionTier === 'platinum' && wantsProtection) {
                 itemProtectionCost = 0;
@@ -1364,7 +1235,7 @@
                 itemProtectionCost = Math.floor(itemProtectionCost * 0.5);
             }
 
-            const transactionFeeRate = getTransactionalFeeRate();
+            const transactionFeeRate = getTransactionalFeeRate(selectedAcquisitionMode);
             const itemServiceCost = Math.floor(computedItemSubtotal * transactionFeeRate);
 
             const uniqueBagId = Date.now().toString();
@@ -1412,13 +1283,13 @@
             
             if(cart.length === 0) {
                 container.innerHTML = `
-                    <div class="p-12 text-center flex flex-col items-center">
-                        <div class="bg-slate-100 text-slate-400 h-16 w-16 rounded-full flex items-center justify-center mb-4 text-2xl">
+                    <div class="p-16 text-center flex flex-col items-center">
+                        <div class="bg-slate-50 text-slate-300 h-24 w-24 rounded-full flex items-center justify-center mb-6 text-4xl border border-slate-100 shadow-inner">
                             <i class="fa-solid fa-bag-shopping"></i>
                         </div>
-                        <h4 class="text-base font-bold text-slate-800 mb-2">Your Wardrobe Bag is Empty</h4>
-                        <p class="text-slate-500 text-xs mb-6">Planning an event soon? Check out our curated catalog today.</p>
-                        <button onclick="switchView('catalogView')" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-6 py-2 rounded-xl text-xs transition-colors">Browse Outfits</button>
+                        <h4 class="text-xl font-bold text-slate-800 mb-2 font-serif">Your Wardrobe Bag is Empty</h4>
+                        <p class="text-slate-500 text-sm mb-8">Planning an event soon? Check out our curated catalog today.</p>
+                        <button onclick="switchView('catalogView')" class="bg-slate-900 hover:bg-black text-white font-bold px-8 py-3.5 rounded-full text-sm transition-all shadow-lg hover:-translate-y-0.5">Browse Outfits</button>
                     </div>
                 `;
                 document.getElementById('cartSubtotal').textContent = `QAR 0.00`;
@@ -1447,58 +1318,49 @@
                 let detailsText = '';
 
                 if (item.mode === 'rent') {
-                    typeBadge = `<span class="bg-blue-50 text-brand-700 font-bold text-[9px] px-2.5 py-1 rounded-full border border-blue-150"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Rented (Wear Day Billing)</span>`;
+                    typeBadge = `<span class="bg-blue-50 text-brand-700 font-bold text-[10px] px-3 py-1 rounded-full border border-blue-100 shadow-sm"><i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Rented (Wear Day Billing)</span>`;
                     detailsText = `
-                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mt-1.5">
-                            <span><i class="fa-regular fa-calendar-check mr-1.5 text-slate-400"></i>${formattedPickup} to ${formattedReturn}</span>
-                            <span><i class="fa-solid fa-check text-emerald-600 mr-1"></i>Billed for ${item.usageDays} wear day${item.usageDays > 1 ? 's' : ''}</span>
-                        </div>`;
-                } else if (item.mode === 'borrow') {
-                    typeBadge = `<span class="bg-amber-50 text-amber-800 font-bold text-[9px] px-2.5 py-1 rounded-full border border-amber-150"><i class="fa-solid fa-users mr-1"></i> Borrowed Outfit</span>`;
-                    detailsText = `
-                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mt-1.5">
-                            <span><i class="fa-regular fa-calendar-check mr-1.5 text-slate-400"></i>${formattedPickup} to ${formattedReturn}</span>
-                            <span><i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>Flat Maintenance Deposit</span>
+                        <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500 mt-2">
+                            <span class="flex items-center gap-1.5"><i class="fa-regular fa-calendar-check text-slate-400"></i>${formattedPickup} to ${formattedReturn}</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-500"></i>Billed for ${item.usageDays} wear day${item.usageDays > 1 ? 's' : ''}</span>
                         </div>`;
                 } else {
-                    typeBadge = `<span class="bg-emerald-50 text-emerald-800 font-bold text-[9px] px-2.5 py-1 rounded-full border border-emerald-150"><i class="fa-solid fa-tag mr-1"></i> Bought pre-loved</span>`;
+                    typeBadge = `<span class="bg-emerald-50 text-emerald-800 font-bold text-[10px] px-3 py-1 rounded-full border border-emerald-100 shadow-sm"><i class="fa-solid fa-tag mr-1.5"></i> Bought pre-loved</span>`;
                     detailsText = `
-                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 mt-1.5">
-                            <span><i class="fa-solid fa-truck-ramp-box mr-1.5 text-slate-400"></i>Own permanently (Direct pickup)</span>
+                        <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500 mt-2">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck-ramp-box text-slate-400"></i>Own permanently (Direct pickup)</span>
                         </div>`;
                 }
 
-                // Append designer tag if sponsored
                 let sponsorText = '';
                 if (item.outfit.sponsored) {
-                    sponsorText = `<div class="text-[9px] text-amber-600 font-extrabold mt-1"><i class="fa-solid fa-star"></i> Featured Designer: ${item.outfit.sponsorName}</div>`;
+                    sponsorText = `<div class="text-[10px] text-amber-600 font-extrabold mt-1.5"><i class="fa-solid fa-star"></i> Featured Designer: ${item.outfit.sponsorName}</div>`;
                 }
 
                 html += `
-                    <li class="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                        <img src="${item.outfit.image}" alt="costume" class="h-24 w-20 object-cover rounded-xl bg-slate-150 shrink-0 shadow-xs border border-slate-200">
+                    <li class="p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 group hover:bg-slate-50 transition-colors">
+                        <img src="${item.outfit.image}" alt="costume" class="h-28 w-24 object-cover rounded-2xl bg-slate-100 shrink-0 shadow-md border border-slate-200 group-hover:scale-105 transition-transform">
                         <div class="flex-grow">
-                            <div class="flex flex-wrap items-center gap-2 mb-1">
-                                <h4 class="font-bold text-slate-900 font-serif text-base leading-tight">${item.outfit.name}</h4>
+                            <div class="flex flex-wrap items-center gap-3 mb-1.5">
+                                <h4 class="font-bold text-slate-900 font-serif text-lg leading-tight">${item.outfit.name}</h4>
                                 ${typeBadge}
                             </div>
-                            <span class="text-[9px] tracking-wider uppercase text-slate-400 font-bold block">${item.outfit.occasion}</span>
+                            <span class="text-[10px] tracking-widest uppercase text-slate-400 font-bold block">${item.outfit.occasion}</span>
                             ${sponsorText}
                             ${detailsText}
                             
-                            <!-- Micro items breakdown inside cart list -->
-                            <div class="flex flex-wrap gap-x-4 text-[10px] text-slate-400 mt-2">
-                                <span>Subtotal: <strong class="text-slate-700">QAR ${item.subtotal.toFixed(2)}</strong></span>
+                            <div class="flex flex-wrap gap-x-5 text-[11px] text-slate-500 mt-3 font-medium">
+                                <span>Subtotal: <strong class="text-slate-800">QAR ${item.subtotal.toFixed(2)}</strong></span>
                                 ${item.protectionCost > 0 ? `<span>Protection: <strong class="text-emerald-600">QAR ${item.protectionCost.toFixed(2)}</strong></span>` : ''}
-                                ${item.serviceCost > 0 ? `<span>Service fee: <strong class="text-slate-600">QAR ${item.serviceCost.toFixed(2)}</strong></span>` : ''}
+                                ${item.serviceCost > 0 ? `<span>Service fee: <strong class="text-slate-800">QAR ${item.serviceCost.toFixed(2)}</strong></span>` : ''}
                             </div>
                         </div>
-                        <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto mt-3 sm:mt-0 gap-3">
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto mt-4 sm:mt-0 gap-4">
                             <div class="text-right">
-                                <span class="font-extrabold text-base text-slate-900 block">QAR ${item.total.toFixed(2)}</span>
-                                <span class="text-[9px] text-slate-400 block">${item.quantity} outfit${item.quantity > 1 ? 's' : ''}</span>
+                                <span class="font-extrabold text-xl text-slate-900 block">QAR ${item.total.toFixed(2)}</span>
+                                <span class="text-xs text-slate-500 block font-medium mt-1">Qty: ${item.quantity}</span>
                             </div>
-                            <button onclick="removeFromCart('${item.bagId}')" class="text-slate-400 hover:text-rose-500 p-2 rounded-lg hover:bg-slate-50 transition-all text-sm">
+                            <button onclick="removeFromCart('${item.bagId}')" class="text-slate-400 hover:text-rose-500 p-2 rounded-xl hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all text-sm">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
@@ -1543,19 +1405,18 @@
             
             if(bookings.length === 0) {
                 container.innerHTML = `
-                    <div class="bg-white rounded-3xl border border-slate-200 p-12 text-center flex flex-col items-center shadow-xs">
-                        <div class="bg-slate-100 text-slate-400 h-16 w-16 rounded-full flex items-center justify-center mb-4 text-2xl">
+                    <div class="bg-white rounded-[2rem] border border-slate-200 p-16 text-center flex flex-col items-center shadow-soft">
+                        <div class="bg-slate-50 text-slate-300 h-20 w-20 rounded-full flex items-center justify-center mb-5 text-3xl shadow-inner">
                             <i class="fa-regular fa-calendar-times"></i>
                         </div>
-                        <h4 class="text-base font-bold text-slate-800 mb-2">No Scheduled Bookings Found</h4>
-                        <p class="text-slate-500 text-xs mb-4">You haven't scheduled any rentals or second-hand buys yet.</p>
-                        <button onclick="switchView('catalogView')" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-6 py-2.5 rounded-xl text-xs transition-colors">Start Browsing</button>
+                        <h4 class="text-xl font-bold text-slate-800 mb-2 font-serif">No Scheduled Bookings Found</h4>
+                        <p class="text-slate-500 text-sm mb-6">You haven't scheduled any rentals or second-hand buys yet.</p>
+                        <button onclick="switchView('catalogView')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-3.5 rounded-full text-sm transition-all shadow-md">Start Browsing</button>
                     </div>
                 `;
                 return;
             }
 
-            // Display bookings history in reverse order
             const sortedBookings = [...bookings].reverse();
             
             let html = '';
@@ -1567,82 +1428,64 @@
                 let pickupDetailsBlock = '';
 
                 if (item.mode === 'rent') {
-                    orderModeTag = `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-blue-50 text-brand-700 px-3 py-1 rounded-full border border-blue-200"><i class="fa-solid fa-clock-rotate-left text-xs"></i> Rental Wear</span>`;
+                    orderModeTag = `<span class="inline-flex items-center gap-1.5 text-[10px] font-bold bg-blue-50 text-brand-700 px-3.5 py-1 rounded-full border border-blue-100 shadow-sm"><i class="fa-solid fa-clock-rotate-left text-xs"></i> Rental Wear</span>`;
                     pickupDetailsBlock = `
-                        <div class="grid sm:grid-cols-2 gap-4 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-[11px]">
+                        <div class="grid sm:grid-cols-2 gap-5 mt-5 bg-slate-50 p-5 rounded-2xl border border-slate-100 text-xs">
                             <div>
-                                <span class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Doha Boutique Collection</span>
-                                <span class="font-semibold text-slate-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-box-open text-brand-500"></i> Pickup: ${pickupFormatted}
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Doha Boutique Collection</span>
+                                <span class="font-bold text-slate-800 flex items-center gap-2">
+                                    <div class="h-6 w-6 rounded-full bg-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-box-open text-brand-500 text-[10px]"></i></div> ${pickupFormatted}
                                 </span>
                             </div>
                             <div>
-                                <span class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Return Wardrobe Deadline</span>
-                                <span class="font-semibold text-slate-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-rotate-left text-amber-600"></i> Return: ${returnFormatted}
-                                </span>
-                            </div>
-                        </div>`;
-                } else if (item.mode === 'borrow') {
-                    orderModeTag = `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-amber-50 text-amber-800 px-3 py-1 rounded-full border border-amber-200"><i class="fa-solid fa-users text-xs"></i> Borrowed Item</span>`;
-                    pickupDetailsBlock = `
-                        <div class="grid sm:grid-cols-2 gap-4 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-[11px]">
-                            <div>
-                                <span class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Community Borrow Pickup</span>
-                                <span class="font-semibold text-slate-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-share-nodes text-brand-500"></i> Pickup: ${pickupFormatted}
-                                </span>
-                            </div>
-                            <div>
-                                <span class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Return Window Closing</span>
-                                <span class="font-semibold text-slate-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-rotate-left text-amber-600"></i> Return: ${returnFormatted}
+                                <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Return Wardrobe Deadline</span>
+                                <span class="font-bold text-slate-800 flex items-center gap-2">
+                                    <div class="h-6 w-6 rounded-full bg-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-rotate-left text-amber-500 text-[10px]"></i></div> ${returnFormatted}
                                 </span>
                             </div>
                         </div>`;
                 } else {
-                    orderModeTag = `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200"><i class="fa-solid fa-tag text-xs"></i> Bought Second-Hand</span>`;
+                    orderModeTag = `<span class="inline-flex items-center gap-1.5 text-[10px] font-bold bg-emerald-50 text-emerald-800 px-3.5 py-1 rounded-full border border-emerald-100 shadow-sm"><i class="fa-solid fa-tag text-xs"></i> Bought Second-Hand</span>`;
                     pickupDetailsBlock = `
-                        <div class="mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-[11px]">
-                            <span class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Pre-Loved Purchase Collection</span>
-                            <span class="font-semibold text-emerald-800 flex items-center gap-1.5">
-                                <i class="fa-solid fa-circle-check"></i> Available instantly for pickup at West Bay Boutique (Keep Forever).
+                        <div class="mt-5 bg-slate-50 p-5 rounded-2xl border border-slate-100 text-xs">
+                            <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Pre-Loved Purchase Collection</span>
+                            <span class="font-bold text-emerald-800 flex items-center gap-2">
+                                <div class="h-6 w-6 rounded-full bg-white flex items-center justify-center shadow-sm"><i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i></div> Available instantly for pickup at West Bay Boutique (Keep Forever).
                             </span>
                         </div>`;
                 }
 
-                // Check for protection cover tag visibility
                 const protectionCoveredText = item.protectionCost > 0 || userSubscriptionTier === 'platinum'
-                    ? `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full"><i class="fa-solid fa-shield-halved"></i> Protection Covered</span>`
-                    : `<span class="inline-flex items-center gap-1 text-[9px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Standard Care</span>`;
+                    ? `<span class="inline-flex items-center gap-1.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full shadow-sm"><i class="fa-solid fa-shield-halved"></i> Protection Covered</span>`
+                    : `<span class="inline-flex items-center gap-1.5 text-[10px] font-medium bg-slate-100 text-slate-500 px-3 py-1 rounded-full shadow-sm border border-slate-200">Standard Care</span>`;
 
                 html += `
-                    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 p-6 flex flex-col md:flex-row gap-6 items-start">
-                        <img src="${item.outfit.image}" alt="outfit" class="h-24 w-20 object-cover rounded-xl bg-slate-100 shrink-0 mx-auto md:mx-0 shadow-xs border border-slate-200">
+                    <div class="bg-white rounded-[2rem] shadow-soft border border-slate-200 p-6 sm:p-8 flex flex-col md:flex-row gap-8 items-start hover:shadow-lg transition-shadow">
+                        <img src="${item.outfit.image}" alt="outfit" class="h-32 w-28 object-cover rounded-2xl bg-slate-100 shrink-0 mx-auto md:mx-0 shadow-md border border-slate-200">
                         
                         <div class="flex-grow w-full">
-                            <div class="flex justify-between items-start mb-2">
+                            <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-150">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span> Active Reservation
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
+                                            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Active
                                         </span>
                                         ${orderModeTag}
                                         ${protectionCoveredText}
                                     </div>
-                                    <h4 class="font-bold text-lg text-slate-900 font-serif">${item.outfit.name}</h4>
+                                    <h4 class="font-bold text-2xl text-slate-900 font-serif">${item.outfit.name}</h4>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">Invoice #${item.orderNumber}</span>
+                                <span class="text-[10px] font-bold text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 font-mono">#${item.orderNumber}</span>
                             </div>
                             
                             ${pickupDetailsBlock}
                         </div>
                         
-                        <div class="flex flex-col justify-center items-center md:items-end md:w-52 md:border-l md:border-slate-100 md:pl-6 w-full pt-4 md:pt-0 border-t border-slate-100 md:border-t-0 mt-4 md:mt-0">
-                            <span class="text-[9px] text-slate-400 mb-1 uppercase tracking-wider font-semibold">Total Invoice Amount</span>
-                            <span class="font-extrabold text-xl text-slate-900 mb-1">QAR ${item.total.toFixed(2)}</span>
-                            <div class="text-[9px] text-emerald-600 font-bold mb-3">Pay on Collection at Boutique</div>
-                            <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-3 py-1 rounded-lg">Quantity: ${item.quantity}</span>
+                        <div class="flex flex-col justify-center items-center md:items-end md:w-56 md:border-l md:border-slate-100 md:pl-8 w-full pt-6 md:pt-0 border-t border-slate-100 md:border-t-0 mt-6 md:mt-0">
+                            <span class="text-[10px] text-slate-400 mb-1 uppercase tracking-widest font-bold">Total Invoice</span>
+                            <span class="font-black text-3xl text-slate-900 mb-1.5">QAR ${item.total.toFixed(2)}</span>
+                            <div class="text-[10px] text-emerald-600 font-bold mb-4 bg-emerald-50 px-3 py-1 rounded-md">Pay on Collection</div>
+                            <span class="text-xs font-bold bg-slate-100 text-slate-700 px-4 py-2 rounded-xl">Qty: ${item.quantity}</span>
                         </div>
                     </div>
                 `;
@@ -1652,7 +1495,6 @@
         }
 
         function toggleGlobalSubscription() {
-            // Cycle subscription profiles in the UI header easily
             if (userSubscriptionTier === 'free') {
                 activateSubscriptionTier('gold');
             } else if (userSubscriptionTier === 'gold') {
@@ -1668,50 +1510,45 @@
             const profileName = document.getElementById('navProfileName');
             const premiumStatus = document.getElementById('premiumUserStatus');
 
-            // Reset all subscription choice button visuals
             document.getElementById('subBtn-free').textContent = 'Activate Pay-as-you-go';
-            document.getElementById('subBtn-free').className = 'w-full mt-8 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-all';
+            document.getElementById('subBtn-free').className = 'w-full mt-10 border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl text-sm transition-all';
             
             document.getElementById('subBtn-gold').textContent = 'Activate StylePass Gold';
-            document.getElementById('subBtn-gold').className = 'w-full mt-8 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-md';
+            document.getElementById('subBtn-gold').className = 'w-full mt-10 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-900 font-black py-4 rounded-2xl text-sm transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5';
 
             document.getElementById('subBtn-platinum').textContent = 'Upgrade to Platinum';
-            document.getElementById('subBtn-platinum').className = 'w-full mt-8 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 rounded-xl text-xs transition-all border border-white/20';
+            document.getElementById('subBtn-platinum').className = 'w-full mt-10 bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-2xl text-sm transition-all border border-white/20 backdrop-blur-sm';
 
             if (tier === 'gold') {
                 profileName.textContent = "Gold Club Member";
                 premiumStatus.classList.remove('hidden');
-                premiumStatus.className = 'flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-extrabold py-1 px-3 rounded-full shadow-sm';
+                premiumStatus.className = 'flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-extrabold py-1.5 px-3.5 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer';
                 premiumStatus.innerHTML = '<i class="fa-solid fa-crown"></i><span>STYLEPASS GOLD</span>';
                 
                 document.getElementById('subBtn-gold').textContent = 'Active Plan (Gold)';
-                document.getElementById('subBtn-gold').className = 'w-full mt-8 bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs transition-all pointer-events-none';
+                document.getElementById('subBtn-gold').className = 'w-full mt-10 bg-emerald-500 text-white font-bold py-4 rounded-2xl text-sm transition-all shadow-md pointer-events-none';
                 showToast('StylePass Activated!', 'You now enjoy 15% discount on all rentals and waived transaction service fees.');
             } else if (tier === 'platinum') {
                 profileName.textContent = "Platinum VIP";
                 premiumStatus.classList.remove('hidden');
-                premiumStatus.className = 'flex items-center gap-1.5 bg-gradient-to-r from-slate-800 to-slate-950 text-amber-400 text-[10px] font-extrabold py-1 px-3 rounded-full border border-amber-400/30 shadow-sm';
+                premiumStatus.className = 'flex items-center gap-1.5 bg-gradient-to-r from-slate-800 to-slate-950 text-amber-400 text-[10px] font-extrabold py-1.5 px-3.5 rounded-full border border-amber-400/30 shadow-sm hover:shadow-md transition-all cursor-pointer';
                 premiumStatus.innerHTML = '<i class="fa-solid fa-gem"></i><span>VIP PLATINUM</span>';
                 
                 document.getElementById('subBtn-platinum').textContent = 'Active Plan (Platinum)';
-                document.getElementById('subBtn-platinum').className = 'w-full mt-8 bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all border-none pointer-events-none';
-                showToast('Platinum VIP Active!', '25% off all rentals, QAR 0 borrowing deposits, and free damage protection covers activated.');
+                document.getElementById('subBtn-platinum').className = 'w-full mt-10 bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-sm transition-all border-none pointer-events-none shadow-md';
+                showToast('Platinum VIP Active!', '25% off all rentals, zero security deposits, and free damage protection covers activated.');
             } else {
                 profileName.textContent = "Demo Guest";
                 premiumStatus.classList.add('hidden');
                 document.getElementById('subBtn-free').textContent = 'Active Basic Tier';
-                document.getElementById('subBtn-free').className = 'w-full mt-8 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-all pointer-events-none';
+                document.getElementById('subBtn-free').className = 'w-full mt-10 bg-slate-200 text-slate-700 font-bold py-3.5 rounded-2xl text-sm transition-all pointer-events-none';
                 showToast('Standard Account Active', 'Using standard pay-as-you-go transactional rates.');
             }
 
-            // Repopulate catalog outfits to update their dynamically discounted values live
-            renderOutfits();
-            
-            // Recompute active calculations in current open checkout processes
+            renderOutfits(document.getElementById('searchInput').value, currentCategoryFilter);
             updateCalculations();
         }
 
-        // Notification toast feedback logic
         function showToast(title, message) {
             const toast = document.getElementById('toast');
             document.getElementById('toastTitle').textContent = title;
@@ -1724,10 +1561,33 @@
             }, 3500);
         }
 
-        // Initialize App on load
         window.onload = () => {
             renderOutfits();
         };
+
+        function handleUpload(e) {
+            e.preventDefault();
+            
+            const newOutfit = {
+                id: outfits.length + 1,
+                name: document.getElementById('upName').value,
+                occasion: document.getElementById('upCategory').value,
+                rentPrice: parseFloat(document.getElementById('upRent').value),
+                buyPrice: parseFloat(document.getElementById('upBuy').value),
+                stock: parseInt(document.getElementById('upStock').value),
+                description: document.getElementById('upDesc').value,
+                image: document.getElementById('upImg').value || "https://cdn.mos.cms.futurecdn.net/tyfYZPJ3Hc4QGWjWZijgAo.jpg",
+                available: true,
+                sponsored: false
+            };
+
+            outfits.unshift(newOutfit);
+            
+            e.target.reset();
+            showToast('Outfit Listed!', 'Your garment is now live on the marketplace.');
+            switchView('catalogView');
+            renderOutfits(document.getElementById('searchInput').value, currentCategoryFilter);
+        }
     </script>
 </body>
 </html>
